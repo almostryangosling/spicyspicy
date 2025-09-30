@@ -3,7 +3,7 @@
     "short_name": "Spicy",
     "description": "Find & Watch Movies & TV Shows with AI-powered recommendations",
     "start_url": "/",
-    "display": "standalone",
+    "display": "fullscreen",
     "background_color": "#000000",
     "theme_color": "#00A86B",
     "orientation": "portrait-primary",
