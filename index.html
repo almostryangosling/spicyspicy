@@ -540,12 +540,12 @@
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Trending</h2>
                 <div class="flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
-                    <button @click="setTrendingType('movie')"
+                    <button @click="trendingType = 'movie'"
                         :class="trendingType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
                         class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
                         Movies
                     </button>
-                    <button @click="setTrendingType('tv')"
+                    <button @click="trendingType = 'tv'"
                         :class="trendingType === 'tv' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
                         class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
                         TV Shows
@@ -595,17 +595,6 @@
                         </div>
                     </div>
                 </template>
-            </div>
-
-            <!-- Loading More Indicator -->
-            <div x-show="trendingLoadingMore" class="flex justify-center py-8">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
-            </div>
-
-            <!-- No More Content Message -->
-            <div x-show="!trendingLoadingMore && !trendingHasMore && trending.length > 0"
-                class="text-center py-4 text-gray-400 text-sm">
-                You've reached the end of trending content
             </div>
         </div>
 
@@ -664,9 +653,6 @@
                 continueWatching: [],
                 trending: [],
                 trendingType: 'movie', // 'movie' or 'tv'
-                trendingPage: 1,
-                trendingHasMore: true,
-                trendingLoadingMore: false,
                 defaultSource: 'vidfast', // Default source
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
@@ -706,8 +692,6 @@
                     setTimeout(() => { this.showContinueWatching = true; }, 200);
                     setTimeout(() => { this.showTrending = true; }, 300);
 
-                    // Add infinite scroll for trending section
-                    this.initInfiniteScroll();
 
                     // Add mouse wheel support for horizontal scrolling
                     this.initMouseWheelScrolling();
@@ -780,95 +764,33 @@
                     }
                 },
 
-                initInfiniteScroll() {
-                    let scrollTimeout;
-                    window.addEventListener('scroll', () => {
-                        clearTimeout(scrollTimeout);
-                        scrollTimeout = setTimeout(() => {
-                            this.checkScrollForLoadMore();
-                        }, 100); // Throttle scroll events
-                    }, { passive: true });
+                loadDefaultSource() {
+                    // Always use vidfast as the source
+                    this.defaultSource = 'vidfast';
                 },
 
-                checkScrollForLoadMore() {
-                    // Only load more if trending section is visible and we have more content
-                    if (!this.showTrending || !this.trendingHasMore || this.trendingLoadingMore) {
-                        return;
-                    }
-
-                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-                    const windowHeight = window.innerHeight;
-                    const documentHeight = document.documentElement.scrollHeight;
-
-                    // Load more when user is within 200px of the bottom
-                    if (scrollTop + windowHeight >= documentHeight - 200) {
-                        this.loadMoreTrending();
-                    }
-                },
-
-                async loadMoreTrending() {
-                    if (!this.trendingHasMore || this.trendingLoadingMore) return;
-
-                    const nextPage = this.trendingPage + 1;
-                    await this.loadTrending(nextPage);
-                },
-
-                async loadTrending(page = 1) {
-                    if (this.trendingLoadingMore && page > 1) return;
-
-                    if (page > 1) {
-                        this.trendingLoadingMore = true;
-                    }
-
+                async loadTrending() {
                     try {
                         // Load trending movies
-                        const movieResponse = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${this.apiKey}&page=${page}`);
+                        const movieResponse = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${this.apiKey}`);
                         const movieData = await movieResponse.json();
-                        const movies = movieData.results.map(item => ({ ...item, media_type: 'movie' }));
+                        const movies = movieData.results.slice(0, 20).map(item => ({ ...item, media_type: 'movie' }));
 
                         // Load trending TV shows
-                        const tvResponse = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${this.apiKey}&page=${page}`);
+                        const tvResponse = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${this.apiKey}`);
                         const tvData = await tvResponse.json();
-                        const tvShows = tvData.results.map(item => ({ ...item, media_type: 'tv' }));
+                        const tvShows = tvData.results.slice(0, 20).map(item => ({ ...item, media_type: 'tv' }));
 
                         // Combine and store
-                        const newContent = [...movies, ...tvShows];
-
-                        if (page === 1) {
-                            this.trending = newContent;
-                        } else {
-                            this.trending = [...this.trending, ...newContent];
-                        }
-
-                        // Update pagination
-                        this.trendingPage = page;
-                        this.trendingHasMore = page < Math.min(movieData.total_pages || 1, tvData.total_pages || 1, 10); // Limit to 10 pages max
-
+                        this.trending = [...movies, ...tvShows];
                     } catch (error) {
                         console.error('Error loading trending content:', error);
-                        if (page === 1) {
-                            this.trending = [];
-                        }
-                        this.trendingHasMore = false;
-                    } finally {
-                        this.trendingLoadingMore = false;
+                        this.trending = [];
                     }
                 },
 
                 getFilteredTrending() {
                     return (this.trending || []).filter(item => item && item.media_type === this.trendingType);
-                },
-
-                // Watch for trending type changes to reset pagination
-                setTrendingType(type) {
-                    if (this.trendingType !== type) {
-                        this.trendingType = type;
-                        // Reset pagination when switching types
-                        this.trendingPage = 1;
-                        this.trendingHasMore = true;
-                        // Reload trending content for the new type
-                        this.loadTrending(1);
-                    }
                 },
 
                 scrollLeft(containerId) {
