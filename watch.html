@@ -1207,6 +1207,32 @@
                     });
             });
         }
+
+        // Force fullscreen on PWA launch
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if running as PWA
+            if (window.matchMedia('(display-mode: standalone)').matches ||
+                window.navigator.standalone === true) {
+
+                // Force fullscreen immediately
+                const requestFullscreen = () => {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen().catch(() => { });
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen();
+                    } else if (document.documentElement.msRequestFullscreen) {
+                        document.documentElement.msRequestFullscreen();
+                    }
+                };
+
+                // Try immediately
+                requestFullscreen();
+
+                // Try again after a short delay to ensure it works
+                setTimeout(requestFullscreen, 100);
+                setTimeout(requestFullscreen, 500);
+            }
+        });
     </script>
 </body>
 
