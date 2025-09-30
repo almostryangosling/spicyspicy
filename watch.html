@@ -492,9 +492,6 @@
                     this.contentType = urlParams.get('type');
                     const defaultSource = urlParams.get('defaultSource');
 
-                    // Load fullscreen setting
-                    this.loadFullscreenSetting();
-
                     if (this.contentId && this.contentType) {
                         this.isShow = this.contentType === 'tv';
                         // Use default source if provided, otherwise use multiembed
@@ -1192,26 +1189,6 @@
                     // Redirect to the content page with the selected item
                     const contentType = item.media_type === 'tv' ? 'tv' : 'movie';
                     window.location.href = `watch.html?id=${item.id}&type=${contentType}`;
-                },
-
-                // Fullscreen functionality
-                loadFullscreenSetting() {
-                    const saved = localStorage.getItem('streamSearch_fullscreen');
-                    if (saved === 'true') {
-                        this.enterFullscreen();
-                    }
-                },
-
-                enterFullscreen() {
-                    if (document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('Fullscreen request failed:', err);
-                        });
-                    } else if (document.documentElement.webkitRequestFullscreen) {
-                        document.documentElement.webkitRequestFullscreen();
-                    } else if (document.documentElement.msRequestFullscreen) {
-                        document.documentElement.msRequestFullscreen();
-                    }
                 },
             }
         }

@@ -934,15 +934,6 @@
                     d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2M7 4h10" />
             </svg>
         </a>
-        <button @click="toggleFullscreen()"
-            class="flex flex-col items-center justify-center transition-colors w-full py-2 rounded-lg hover:bg-amoled-card"
-            :class="isFullscreen ? 'text-blue-400' : 'text-gray-300 hover:text-white'">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-            </svg>
-        </button>
     </div>
 
     <script>
@@ -979,8 +970,6 @@
                 showSad: false,
                 showSK: false,
                 showRomance: false,
-                // Fullscreen properties
-                isFullscreen: false,
                 // Navigation properties
                 currentSection: 0,
                 currentItem: 0,
@@ -1016,7 +1005,6 @@
                     this.loadSadRecommendations();
                     this.loadSKRecommendations();
                     this.loadRomanceRecommendations();
-                    this.loadFullscreenSetting();
 
                     // Check for updates from watch.html every 2 seconds
                     setInterval(() => {
@@ -1900,54 +1888,6 @@
                     if (searchInput) {
                         searchInput.focus();
                         searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                },
-
-                // Fullscreen functionality
-                loadFullscreenSetting() {
-                    const saved = localStorage.getItem('streamSearch_fullscreen');
-                    if (saved === 'true') {
-                        this.isFullscreen = true;
-                        this.enterFullscreen();
-                    }
-                },
-
-                saveFullscreenSetting() {
-                    localStorage.setItem('streamSearch_fullscreen', this.isFullscreen.toString());
-                },
-
-                toggleFullscreen() {
-                    this.isFullscreen = !this.isFullscreen;
-                    this.saveFullscreenSetting();
-
-                    if (this.isFullscreen) {
-                        this.enterFullscreen();
-                    } else {
-                        this.exitFullscreen();
-                    }
-                },
-
-                enterFullscreen() {
-                    if (document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('Fullscreen request failed:', err);
-                        });
-                    } else if (document.documentElement.webkitRequestFullscreen) {
-                        document.documentElement.webkitRequestFullscreen();
-                    } else if (document.documentElement.msRequestFullscreen) {
-                        document.documentElement.msRequestFullscreen();
-                    }
-                },
-
-                exitFullscreen() {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen().catch(err => {
-                            console.log('Exit fullscreen failed:', err);
-                        });
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
                     }
                 }
             }

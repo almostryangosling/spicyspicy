@@ -473,7 +473,6 @@
                     this.loadWatchlist();
                     this.loadContent();
                     this.initMobileOptimizations();
-                    this.loadFullscreenSetting();
                 },
 
                 loadWatchlist() {
@@ -688,26 +687,6 @@
                 watchContent(item) {
                     const type = item.first_air_date ? 'tv' : 'movie';
                     window.location.href = `watch.html?id=${item.id}&type=${type}`;
-                },
-
-                // Fullscreen functionality
-                loadFullscreenSetting() {
-                    const saved = localStorage.getItem('streamSearch_fullscreen');
-                    if (saved === 'true') {
-                        this.enterFullscreen();
-                    }
-                },
-
-                enterFullscreen() {
-                    if (document.documentElement.requestFullscreen) {
-                        document.documentElement.requestFullscreen().catch(err => {
-                            console.log('Fullscreen request failed:', err);
-                        });
-                    } else if (document.documentElement.webkitRequestFullscreen) {
-                        document.documentElement.webkitRequestFullscreen();
-                    } else if (document.documentElement.msRequestFullscreen) {
-                        document.documentElement.msRequestFullscreen();
-                    }
                 }
             }
         }
