@@ -774,12 +774,12 @@
                         // Load trending movies
                         const movieResponse = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${this.apiKey}`);
                         const movieData = await movieResponse.json();
-                        const movies = movieData.results.slice(0, 20).map(item => ({ ...item, media_type: 'movie' }));
+                        const movies = movieData.results.slice(0, 50).map(item => ({ ...item, media_type: 'movie' }));
 
                         // Load trending TV shows
                         const tvResponse = await fetch(`https://api.themoviedb.org/3/trending/tv/day?api_key=${this.apiKey}`);
                         const tvData = await tvResponse.json();
-                        const tvShows = tvData.results.slice(0, 20).map(item => ({ ...item, media_type: 'tv' }));
+                        const tvShows = tvData.results.slice(0, 50).map(item => ({ ...item, media_type: 'tv' }));
 
                         // Combine and store
                         this.trending = [...movies, ...tvShows];
