@@ -331,6 +331,13 @@
                 min-width: 240px;
             }
         }
+
+        @media (max-width: 639px) {
+            .card-fixed {
+                flex: 0 0 140px;
+                min-width: 140px;
+            }
+        }
     </style>
     <script>
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
@@ -343,7 +350,7 @@
     <div class="container mx-auto px-4 py-16 sm:py-24 md:py-32 lg:py-48">
         <!-- Header - No buttons needed on home page -->
         <!-- Search Bar -->
-        <div x-show="showSearchBar" class="flex justify-center mb-8 sm:mb-12 fade-in">
+        <div x-show="showSearchBar" class="hidden sm:flex justify-center mb-8 sm:mb-12 fade-in">
             <div class="search-container max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
                 <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
                     @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..." class="search-input"
@@ -411,12 +418,12 @@
         </div>
 
         <!-- Watchlist -->
-        <div x-show="showWatchlist && watchlist.length > 0"
+        <div x-show="showWatchlist && getFilteredWatchlist().length > 0"
             class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-1">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Watchlist</h2>
             <div class="scroll-container">
                 <div id="watchlist-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in watchlist" :key="'watchlist-' + index">
+                    <template x-for="(item, index) in getFilteredWatchlist()" :key="'watchlist-' + index">
                         <div class="card-fixed tv-navigable-item">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -453,12 +460,12 @@
         </div>
 
         <!-- Continue Watching -->
-        <div id="continue-watching-section" x-show="showContinueWatching && continueWatching.length > 0"
+        <div id="continue-watching-section" x-show="showContinueWatching && getFilteredContinueWatching().length > 0"
             class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-2">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
             <div class="scroll-container">
                 <div id="continue-watching-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in continueWatching" :key="'continue-' + index">
+                    <template x-for="(item, index) in getFilteredContinueWatching()" :key="'continue-' + index">
                         <div class="card-fixed tv-navigable-item">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -499,7 +506,7 @@
             class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Trending</h2>
-                <div class="flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
+                <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
                     <button @click="trendingType = 'movie'"
                         :class="trendingType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
                         class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
@@ -568,6 +575,67 @@
         </div>
     </div>
 
+    <!-- Search Overlay -->
+    <div x-show="showSearch" class="fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
+        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="flex-shrink-0 flex items-center justify-between mb-6">
+            <h2 class="text-2xl font-bold text-white">Search</h2>
+            <button @click="toggleSearch()" class="p-2 text-gray-400 hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+        <div class="relative mb-6">
+            <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
+                @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..."
+                class="w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors">
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div x-show="isLoading" class="flex justify-center items-center flex-grow">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
+        </div>
+
+        <!-- Results -->
+        <div x-show="!isLoading && results.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <template x-for="item in results" :key="item.id">
+                    <div @click="watchContent(item)" class="cursor-pointer group">
+                        <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
+                            <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
+                                :alt="item.title || item.name"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                @error="event => { event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'; }">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                            <h3 class="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white"
+                                x-text="item.title || item.name"></h3>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- No Results -->
+        <div x-show="!isLoading && searchQuery && results.length === 0"
+            class="flex flex-col justify-center items-center flex-grow text-center text-gray-400">
+            <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.467-.881-6.08-2.33" />
+            </svg>
+            <p>No results found for "<span x-text="searchQuery" class="font-semibold text-gray-300"></span>"</p>
+        </div>
+    </div>
+
     <!-- Bottom Navigation (Mobile Only) -->
     <div
         class="fixed bottom-0 left-0 right-0 bg-amoled border-t border-amoled-border p-2 flex justify-around sm:hidden z-50">
@@ -579,7 +647,7 @@
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
         </a>
-        <a href="#" @click.prevent="focusSearch()"
+        <a href="#" @click.prevent="toggleSearch()"
             class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -607,6 +675,7 @@
                 continueWatching: [],
                 trending: [],
                 trendingType: 'movie', // 'movie' or 'tv'
+                contentType: 'movie', // 'movie' or 'tv' for mobile content filtering
                 defaultSource: 'vidfast', // Default source
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
@@ -614,6 +683,7 @@
                 showContinueWatching: false,
                 showDefaultSource: false,
                 showTrending: false,
+                showSearch: false,
                 // Navigation properties
                 currentSection: 0,
                 currentItem: 0,
@@ -640,6 +710,11 @@
                         this.checkForContinueWatchingUpdates();
                     }, 2000);
 
+                    // Refresh trending content every 30 minutes
+                    setInterval(() => {
+                        this.loadTrending();
+                    }, 30 * 60 * 1000); // 30 minutes
+
                     // Progressive loading with fast delays
                     setTimeout(() => { this.showSearchBar = true; }, 50);
                     setTimeout(() => { this.showWatchlist = true; }, 100);
@@ -652,6 +727,9 @@
 
                     // Always enable keyboard navigation
                     this.initKeyboardNavigation();
+
+                    // Add swipe detection for mobile content switching
+                    this.initSwipeDetection();
 
                     // Initialize focus (but don't auto-focus search on mobile to avoid keyboard popup)
                     // setTimeout(() => {
@@ -744,7 +822,16 @@
                 },
 
                 getFilteredTrending() {
-                    return (this.trending || []).filter(item => item && item.media_type === this.trendingType);
+                    const type = this.isMobileDevice() ? this.contentType : this.trendingType;
+                    return (this.trending || []).filter(item => item && item.media_type === type);
+                },
+
+                getFilteredWatchlist() {
+                    return this.watchlist.filter(item => item.media_type === this.contentType);
+                },
+
+                getFilteredContinueWatching() {
+                    return this.continueWatching.filter(item => item.media_type === this.contentType);
                 },
 
                 scrollLeft(containerId) {
@@ -899,6 +986,76 @@
                                 break;
                         }
                     });
+                },
+
+                initSwipeDetection() {
+                    if (!this.isMobileDevice()) return;
+
+                    let startX = 0;
+                    let startY = 0;
+                    let endX = 0;
+                    let endY = 0;
+                    let startElement = null;
+
+                    document.addEventListener('touchstart', (e) => {
+                        startX = e.touches[0].clientX;
+                        startY = e.touches[0].clientY;
+                        startElement = e.target;
+                    }, { passive: true });
+
+                    document.addEventListener('touchend', (e) => {
+                        endX = e.changedTouches[0].clientX;
+                        endY = e.changedTouches[0].clientY;
+                        this.handleSwipe(startX, startY, endX, endY, startElement);
+                    }, { passive: true });
+                },
+
+                handleSwipe(startX, startY, endX, endY, startElement) {
+                    // Only allow swipe if started from an empty section (not on cards or interactive elements)
+                    if (!this.isSwipeFromEmptySection(startElement)) {
+                        return;
+                    }
+
+                    const deltaX = endX - startX;
+                    const deltaY = endY - startY;
+                    const minSwipeDistance = 50;
+
+                    // Check if it's a horizontal swipe (more horizontal than vertical)
+                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
+                        if (deltaX < 0) {
+                            // Swipe left - switch to TV
+                            this.contentType = 'tv';
+                        } else {
+                            // Swipe right - switch to Movie
+                            this.contentType = 'movie';
+                        }
+                    }
+                },
+
+                isSwipeFromEmptySection(element) {
+                    // Check if the swipe started from an empty area (not on cards, buttons, or interactive elements)
+                    const interactiveSelectors = [
+                        '.card-hover',
+                        'button',
+                        '.tv-navigable-item',
+                        'a',
+                        'input',
+                        'select',
+                        'textarea',
+                        '[onclick]',
+                        '[role="button"]'
+                    ];
+
+                    // Check if the element or any of its parents match interactive selectors
+                    let currentElement = element;
+                    while (currentElement && currentElement !== document.body) {
+                        if (interactiveSelectors.some(selector => currentElement.matches && currentElement.matches(selector))) {
+                            return false; // Started on an interactive element
+                        }
+                        currentElement = currentElement.parentElement;
+                    }
+
+                    return true; // Started from an empty section
                 },
 
                 navigateUp() {
@@ -1106,6 +1263,23 @@
                     if (searchInput) {
                         searchInput.focus();
                         searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                },
+
+                toggleSearch() {
+                    this.showSearch = !this.showSearch;
+                    if (this.showSearch) {
+                        // Focus the search input when opening
+                        this.$nextTick(() => {
+                            const searchInput = document.querySelector('.search-overlay input');
+                            if (searchInput) {
+                                searchInput.focus();
+                            }
+                        });
+                    } else {
+                        // Clear search when closing
+                        this.searchQuery = '';
+                        this.results = [];
                     }
                 }
             }
