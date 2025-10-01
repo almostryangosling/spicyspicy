@@ -1164,7 +1164,7 @@
                     // Always enable keyboard navigation
                     this.initKeyboardNavigation();
 
-                    // Add swipe detection for mobile content switching
+                    // Add double tap detection for mobile content switching
                     this.initSwipeDetection();
 
                     // Initialize focus (but don't auto-focus search on mobile to avoid keyboard popup)
@@ -1599,54 +1599,43 @@
                 initSwipeDetection() {
                     if (!this.isMobileDevice()) return;
 
-                    let startX = 0;
-                    let startY = 0;
-                    let endX = 0;
-                    let endY = 0;
-                    let startElement = null;
-
-                    document.addEventListener('touchstart', (e) => {
-                        startX = e.touches[0].clientX;
-                        startY = e.touches[0].clientY;
-                        startElement = e.target;
-                    }, { passive: true });
+                    let lastTapTime = 0;
+                    let tapTimeout = null;
 
                     document.addEventListener('touchend', (e) => {
-                        endX = e.changedTouches[0].clientX;
-                        endY = e.changedTouches[0].clientY;
-                        this.handleSwipe(startX, startY, endX, endY, startElement);
+                        const currentTime = new Date().getTime();
+                        const tapInterval = currentTime - lastTapTime;
+
+                        // Check if it's a double tap (within 300ms)
+                        if (tapInterval < 300 && tapInterval > 0) {
+                            // Clear any pending single tap
+                            clearTimeout(tapTimeout);
+
+                            // Check if tap was on an empty section
+                            if (this.isDoubleTapOnEmptySection(e.target)) {
+                                // Toggle between movie and tv
+                                this.contentType = this.contentType === 'movie' ? 'tv' : 'movie';
+
+                                // Reset hero carousel to first slide when content type changes
+                                this.currentHeroSlide = 0;
+                                this.stopHeroCarousel();
+                                this.startHeroCarousel();
+
+                                // Provide haptic feedback if available
+                                if (navigator.vibrate) {
+                                    navigator.vibrate(50);
+                                }
+                            }
+
+                            lastTapTime = 0; // Reset to prevent triple tap
+                        } else {
+                            lastTapTime = currentTime;
+                        }
                     }, { passive: true });
                 },
 
-                handleSwipe(startX, startY, endX, endY, startElement) {
-                    // Only allow swipe if started from an empty section (not on cards or interactive elements)
-                    if (!this.isSwipeFromEmptySection(startElement)) {
-                        return;
-                    }
-
-                    const deltaX = endX - startX;
-                    const deltaY = endY - startY;
-                    const minSwipeDistance = 50;
-
-                    // Check if it's a horizontal swipe (more horizontal than vertical)
-                    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > minSwipeDistance) {
-                        if (deltaX < 0) {
-                            // Swipe left - switch to TV
-                            this.contentType = 'tv';
-                        } else {
-                            // Swipe right - switch to Movie
-                            this.contentType = 'movie';
-                        }
-
-                        // Reset hero carousel to first slide when content type changes
-                        this.currentHeroSlide = 0;
-                        this.stopHeroCarousel();
-                        this.startHeroCarousel();
-                    }
-                },
-
-                isSwipeFromEmptySection(element) {
-                    // Check if the swipe started from an empty area (not on cards, buttons, or interactive elements)
+                isDoubleTapOnEmptySection(element) {
+                    // Check if the double tap was on an empty area (not on cards, buttons, or interactive elements)
                     const interactiveSelectors = [
                         '.card-hover',
                         'button',
@@ -1663,12 +1652,12 @@
                     let currentElement = element;
                     while (currentElement && currentElement !== document.body) {
                         if (interactiveSelectors.some(selector => currentElement.matches && currentElement.matches(selector))) {
-                            return false; // Started on an interactive element
+                            return false; // Tapped on an interactive element
                         }
                         currentElement = currentElement.parentElement;
                     }
 
-                    return true; // Started from an empty section
+                    return true; // Tapped on an empty section
                 },
 
                 navigateUp() {
