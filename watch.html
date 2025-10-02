@@ -465,12 +465,7 @@
 
                 <!-- Content Details -->
                 <div id="info-section" x-show="content"
-                    class="rounded-lg shadow-lg p-4 sm:p-6 border border-amoled-border fade-in fade-in-delay-1 relative">
-                    <!-- Make it Work Button -->
-                    <button @click="switchToAlternativeSource()"
-                        class="absolute top-3 right-3 sm:top-4 sm:right-4 px-3 py-1.5 sm:px-4 sm:py-2 bg-transparent border border-gray-600 hover:border-gray-400 text-gray-400 hover:text-gray-200 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 focus:outline-none backdrop-blur-sm">
-                        Make it Work
-                    </button>
+                    class="rounded-lg shadow-lg p-4 sm:p-6 border border-amoled-border fade-in fade-in-delay-1">
                     <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
                         <!-- Poster -->
                         <div class="flex-shrink-0">
@@ -632,7 +627,6 @@
                 seasons: [],
                 episodes: [],
                 selectedSource: 'vidfast', // Hardcoded to VidFast
-                useAlternativeSource: false, // Track if using VidKing instead of VidFast
                 currentVideoUrl: '',
                 // Additional content data
                 trailerUrl: '',
@@ -765,20 +759,11 @@
                 updateVideoUrl() {
                     let url;
 
-                    if (this.useAlternativeSource) {
-                        // Use VidKing as alternative source
-                        if (this.isShow) {
-                            url = `https://www.vidking.net/embed/tv/${this.contentId}/${this.selectedSeason}/${this.selectedEpisode}`;
-                        } else {
-                            url = `https://www.vidking.net/embed/movie/${this.contentId}`;
-                        }
+                    // Use VidFast as default source
+                    if (this.isShow) {
+                        url = `https://vidfast.pro/tv/${this.contentId}/${this.selectedSeason}/${this.selectedEpisode}?autoPlay=true`;
                     } else {
-                        // Use VidFast as default source
-                        if (this.isShow) {
-                            url = `https://vidfast.pro/tv/${this.contentId}/${this.selectedSeason}/${this.selectedEpisode}?autoPlay=true`;
-                        } else {
-                            url = `https://vidfast.pro/movie/${this.contentId}?autoPlay=true`;
-                        }
+                        url = `https://vidfast.pro/movie/${this.contentId}?autoPlay=true`;
                     }
 
                     this.currentVideoUrl = url;
@@ -792,13 +777,6 @@
 
                     // Setup tracking for new video
                     this.setupPlaybackTracking();
-                },
-
-                switchToAlternativeSource() {
-                    // Toggle to alternative source (VidKing)
-                    this.useAlternativeSource = true;
-                    this.updateVideoUrl();
-                    console.log('Switched to alternative source (VidKing):', this.currentVideoUrl);
                 },
 
                 // Playback tracking functions
