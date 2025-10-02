@@ -811,7 +811,7 @@
 
         <!-- Watchlist -->
         <div x-show="showWatchlist && getFilteredWatchlist().length > 0"
-            class="max-w-7xl mx-auto mt-4 sm:mt-6 fade-in fade-in-delay-1">
+            class="hidden sm:block max-w-7xl mx-auto mt-4 sm:mt-6 fade-in fade-in-delay-1">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Watchlist</h2>
             <div class="scroll-container">
                 <div id="watchlist-container" class="horizontal-scroll">
@@ -854,7 +854,7 @@
 
         <!-- Continue Watching -->
         <div id="continue-watching-section" x-show="showContinueWatching && getFilteredContinueWatching().length > 0"
-            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-2">
+            class="hidden sm:block max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-2">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
             <div class="scroll-container">
                 <div id="continue-watching-container" class="horizontal-scroll">
@@ -956,7 +956,7 @@
 
         <!-- Popular Movies -->
         <div x-show="showPopularMovies && getFilteredPopularMovies().length > 0"
-            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
+            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
@@ -1015,7 +1015,7 @@
 
         <!-- Popular TV Shows -->
         <div x-show="showPopularTVShows && getFilteredPopularTVShows().length > 0"
-            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
+            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
@@ -1074,7 +1074,7 @@
 
         <!-- Animation Section -->
         <div x-show="showHindi && getFilteredHindi().length > 0"
-            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-5">
+            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-5">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Animation</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
