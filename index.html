@@ -660,8 +660,8 @@
         }
 
         .card-fixed {
-            flex: 0 0 180px;
-            min-width: 180px;
+            flex: 0 0 140px;
+            min-width: 140px;
         }
 
         @media (min-width: 640px) {
@@ -682,13 +682,6 @@
             .card-fixed {
                 flex: 0 0 240px;
                 min-width: 240px;
-            }
-        }
-
-        @media (max-width: 639px) {
-            .card-fixed {
-                flex: 0 0 140px;
-                min-width: 140px;
             }
         }
     </style>
@@ -963,7 +956,7 @@
 
         <!-- Popular Movies -->
         <div x-show="showPopularMovies && getFilteredPopularMovies().length > 0"
-            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
+            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
@@ -1022,7 +1015,7 @@
 
         <!-- Popular TV Shows -->
         <div x-show="showPopularTVShows && getFilteredPopularTVShows().length > 0"
-            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
+            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
@@ -1081,7 +1074,7 @@
 
         <!-- Animation Section -->
         <div x-show="showHindi && getFilteredHindi().length > 0"
-            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-5">
+            class="hidden max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-5">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Animation</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
