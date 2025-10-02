@@ -274,7 +274,6 @@
             width: 100%;
             height: 100%;
             display: flex;
-            transition: transform 0.3s ease-out;
             will-change: transform;
         }
 
@@ -543,7 +542,8 @@
     <div x-show="showHeroCarousel && getHeroItems().length > 0" class="hero-carousel sm:hidden"
         x-init="startHeroCarousel()" @touchstart="handleHeroTouchStart($event)" @touchmove="handleHeroTouchMove($event)"
         @touchend="handleHeroTouchEnd($event)">
-        <div class="hero-slides-container" :style="`transform: translateX(-${currentHeroSlide * 100}%)`">
+        <div class="hero-slides-container"
+            :style="`transform: translateX(-${currentHeroSlide * 100}%); transition: ${heroTransition ? 'transform 0.3s ease-out' : 'none'}`">
             <template x-for="(item, index) in getHeroItems()" :key="'hero-' + index">
                 <div class="hero-slide">
                     <div class="hero-backdrop"
@@ -976,19 +976,11 @@
 
     <!-- Search Overlay -->
     <div x-show="showSearch" class="search-overlay fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div class="flex-shrink-0 flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white">Search</h2>
-            <button @click="toggleSearch()" class="p-2 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
-        <div class="relative mb-6">
+        @click.self="toggleSearch()" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0">
+        <div class="relative mb-6 mt-4">
             <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
                 @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..."
                 class="w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors"
@@ -1002,12 +994,12 @@
         </div>
 
         <!-- Loading State -->
-        <div x-show="isLoading" class="flex justify-center items-center flex-grow">
+        <div x-show="isLoading" class="flex justify-center items-center flex-grow" @click.stop>
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
         </div>
 
         <!-- Results -->
-        <div x-show="!isLoading && results.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4">
+        <div x-show="!isLoading && results.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4" @click.stop>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="item in results" :key="item.id">
                     <div @click="watchContent(item)" class="cursor-pointer group">
@@ -1027,7 +1019,7 @@
 
         <!-- No Results -->
         <div x-show="!isLoading && searchQuery && results.length === 0"
-            class="flex flex-col justify-center items-center flex-grow text-center text-gray-400">
+            class="flex flex-col justify-center items-center flex-grow text-center text-gray-400" @click.stop>
             <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.467-.881-6.08-2.33" />
@@ -1100,10 +1092,11 @@
                 showHindi: false,
                 showSearch: false,
                 showHeroCarousel: false,
-                currentHeroSlide: 0,
+                currentHeroSlide: 1, // Start at 1 because 0 is the duplicate last slide
                 heroCarouselInterval: null,
                 heroTouchStartX: 0,
                 heroTouchEndX: 0,
+                heroTransition: true, // Control transition animation
                 // Navigation properties
                 currentSection: 0,
                 currentItem: 0,
@@ -1180,10 +1173,14 @@
                     const trendingItems = this.trending && this.trending.length > 0
                         ? this.trending.filter(item => item.media_type === this.contentType)
                         : [];
-                    return trendingItems.slice(0, 10); // Get first 10 filtered trending items
-                },
+                    const items = trendingItems.slice(0, 10); // Get first 10 filtered trending items
 
-                startHeroCarousel() {
+                    // Create infinite loop by adding last item at start and first item at end
+                    if (items.length > 0) {
+                        return [items[items.length - 1], ...items, items[0]];
+                    }
+                    return items;
+                }, startHeroCarousel() {
                     // Auto-rotate every 5 seconds
                     this.heroCarouselInterval = setInterval(() => {
                         this.nextHeroSlide();
@@ -1200,18 +1197,48 @@
                 nextHeroSlide() {
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
-                    this.currentHeroSlide = (this.currentHeroSlide + 1) % items.length;
+
+                    const realLength = items.length - 2; // Subtract the 2 clones
+
+                    this.heroTransition = true;
+                    this.currentHeroSlide++;
+
+                    // After transitioning to the clone at the end, snap back to real first slide
+                    if (this.currentHeroSlide > realLength) {
+                        setTimeout(() => {
+                            this.heroTransition = false;
+                            this.currentHeroSlide = 1; // Jump to real first slide (index 1)
+
+                            // Re-enable transition after a brief moment
+                            setTimeout(() => {
+                                this.heroTransition = true;
+                            }, 50);
+                        }, 300);
+                    }
                 },
 
                 prevHeroSlide() {
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
-                    this.currentHeroSlide = this.currentHeroSlide === 0
-                        ? items.length - 1
-                        : this.currentHeroSlide - 1;
-                },
 
-                goToHeroSlide(index) {
+                    const realLength = items.length - 2; // Subtract the 2 clones
+
+                    this.heroTransition = true;
+                    this.currentHeroSlide--;
+
+                    // After transitioning to the clone at the start, snap back to real last slide
+                    if (this.currentHeroSlide < 1) {
+                        setTimeout(() => {
+                            this.heroTransition = false;
+                            this.currentHeroSlide = realLength; // Jump to real last slide
+
+                            // Re-enable transition after a brief moment
+                            setTimeout(() => {
+                                this.heroTransition = true;
+                            }, 50);
+                        }, 300);
+                    }
+                }, goToHeroSlide(index) {
                     this.currentHeroSlide = index;
                     // Reset auto-rotation timer
                     this.stopHeroCarousel();
@@ -1618,7 +1645,7 @@
                                 this.contentType = this.contentType === 'movie' ? 'tv' : 'movie';
 
                                 // Reset hero carousel to first slide when content type changes
-                                this.currentHeroSlide = 0;
+                                this.currentHeroSlide = 1; // Start at 1 (real first slide)
                                 this.stopHeroCarousel();
                                 this.startHeroCarousel();
                             }

@@ -6,270 +6,271 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Discover - Spicy</title>
 
-    <!-- PWA Meta Tags -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Spicy">
-    <meta name="mobile-web-app-capable" content="yes">
+    <!- .content-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; } @media (max-width: 639px) {
+        .content-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; } }ags -->
+        <link rel="manifest" href="manifest.json">
+        <meta name="theme-color" content="#000000">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Spicy">
+        <meta name="mobile-web-app-capable" content="yes">
 
-    <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300A86B' d='M16 2C12.1 2 9 5.1 9 9c0 1.4.4 2.7 1 3.8C8.7 13.8 7 15.8 7 18c0 3.9 3.1 7 7 7h4c3.9 0 7-3.1 7-7 0-2.2-1.7-4.2-3-5.2.6-1.1 1-2.4 1-3.8 0-3.9-3.1-7-7-7z'/%3E%3Cpath fill='%23008000' d='M16 4c2.8 0 5 2.2 5 5 0 1-.3 2-.8 2.8-.2.3-.4.6-.6.9-.5-.1-1-.2-1.6-.2-2.8 0-5 2.2-5 5 0 .6.1 1.1.3 1.6-.3-.2-.6-.4-.9-.6C12.3 17 12 16 12 15c0-2.8 2.2-5 5-5 .6 0 1.1.1 1.6.3-.2-.3-.4-.6-.6-.9C18.3 8.3 18 7 18 6c0-2.8 2.2-5 5-5z'/%3E%3C/svg%3E">
-    <link rel="apple-touch-icon" href="appicon.jpg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    backgroundColor: {
-                        'amoled': '#000000',
-                        'amoled-light': '#0A0A0A',
-                        'amoled-card': '#121212',
-                    },
-                    borderColor: {
-                        'amoled-border': '#1A1A1A',
+        <link rel="icon" type="image/svg+xml"
+            href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300A86B' d='M16 2C12.1 2 9 5.1 9 9c0 1.4.4 2.7 1 3.8C8.7 13.8 7 15.8 7 18c0 3.9 3.1 7 7 7h4c3.9 0 7-3.1 7-7 0-2.2-1.7-4.2-3-5.2.6-1.1 1-2.4 1-3.8 0-3.9-3.1-7-7-7z'/%3E%3Cpath fill='%23008000' d='M16 4c2.8 0 5 2.2 5 5 0 1-.3 2-.8 2.8-.2.3-.4.6-.6.9-.5-.1-1-.2-1.6-.2-2.8 0-5 2.2-5 5 0 .6.1 1.1.3 1.6-.3-.2-.6-.4-.9-.6C12.3 17 12 16 12 15c0-2.8 2.2-5 5-5 .6 0 1.1.1 1.6.3-.2-.3-.4-.6-.6-.9C18.3 8.3 18 7 18 6c0-2.8 2.2-5 5-5z'/%3E%3C/svg%3E">
+        <link rel="apple-touch-icon" href="appicon.jpg">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            sans: ['Inter', 'sans-serif'],
+                        },
+                        backgroundColor: {
+                            'amoled': '#000000',
+                            'amoled-light': '#0A0A0A',
+                            'amoled-card': '#121212',
+                        },
+                        borderColor: {
+                            'amoled-border': '#1A1A1A',
+                        },
                     },
                 },
-            },
-        }
-    </script>
-    <style>
-        .card-hover {
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-        }
-
-        .card-hover::after {
-            content: '';
-            position: absolute;
-            inset: -1px;
-            background: linear-gradient(35deg,
-                    rgba(168, 85, 247, 0.4),
-                    rgba(168, 85, 247, 0),
-                    rgba(139, 92, 246, 0.4));
-            border-radius: 0.5rem;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .card-hover:hover {
-            transform: scale(1.02);
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-hover:hover::after {
-            opacity: 1;
-        }
-
-        .card-hover:hover .card-overlay {
-            opacity: 1;
-            background: linear-gradient(to top,
-                    rgba(0, 0, 0, 0.95) 0%,
-                    rgba(0, 0, 0, 0.8) 40%,
-                    rgba(0, 0, 0, 0.2) 100%);
-        }
-
-        .card-overlay {
-            opacity: 0;
-            transition: all 0.4s ease;
-            background: linear-gradient(to top,
-                    rgba(0, 0, 0, 0.9) 0%,
-                    rgba(0, 0, 0, 0.7) 50%,
-                    rgba(0, 0, 0, 0.3) 100%);
-        }
-
-        .card-hover:hover img {
-            filter: blur(2px) brightness(0.9);
-            transition: all 0.4s ease;
-        }
-
-        .card-hover img {
-            transition: all 0.4s ease;
-        }
-
-        .nav-scroll {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 0 1rem;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        @media (max-width: 640px) {
-            .nav-scroll {
-                padding: 0 0.5rem;
-                gap: 0.375rem;
             }
-        }
+        </script>
+        <style>
+            .card-hover {
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                position: relative;
+            }
 
-        .nav-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .nav-item {
-            flex: 0 0 auto;
-            white-space: nowrap;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            border: 1px solid #1A1A1A;
-            background: #0A0A0A;
-            color: #9CA3AF;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            font-size: 1rem;
-            min-height: 44px;
-            display: flex;
-            align-items: center;
-        }
-
-        @media (max-width: 640px) {
-            .nav-item {
-                padding: 0.5rem 1rem;
-                font-size: 0.875rem;
+            .card-hover::after {
+                content: '';
+                position: absolute;
+                inset: -1px;
+                background: linear-gradient(35deg,
+                        rgba(168, 85, 247, 0.4),
+                        rgba(168, 85, 247, 0),
+                        rgba(139, 92, 246, 0.4));
                 border-radius: 0.5rem;
+                z-index: -1;
+                opacity: 0;
+                transition: opacity 0.4s ease;
             }
-        }
 
-        .nav-item:hover {
-            background: #121212;
-            color: #FFFFFF;
-            border-color: #404040;
-        }
+            .card-hover:hover {
+                transform: scale(1.02);
+                box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5);
+            }
 
-        .nav-item.active {
-            background: #1F1F1F;
-            color: #FFFFFF;
-            border-color: #404040;
-        }
+            .card-hover:hover::after {
+                opacity: 1;
+            }
 
-        .scroll-container {
-            position: relative;
-        }
+            .card-hover:hover .card-overlay {
+                opacity: 1;
+                background: linear-gradient(to top,
+                        rgba(0, 0, 0, 0.95) 0%,
+                        rgba(0, 0, 0, 0.8) 40%,
+                        rgba(0, 0, 0, 0.2) 100%);
+            }
 
-        .scroll-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid transparent;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s ease;
-            opacity: 0.7;
-        }
+            .card-overlay {
+                opacity: 0;
+                transition: all 0.4s ease;
+                background: linear-gradient(to top,
+                        rgba(0, 0, 0, 0.9) 0%,
+                        rgba(0, 0, 0, 0.7) 50%,
+                        rgba(0, 0, 0, 0.3) 100%);
+            }
 
-        @media (max-width: 640px) {
-            .scroll-arrow {
+            .card-hover:hover img {
+                filter: blur(2px) brightness(0.9);
+                transition: all 0.4s ease;
+            }
+
+            .card-hover img {
+                transition: all 0.4s ease;
+            }
+
+            .nav-scroll {
+                display: flex;
+                gap: 0.5rem;
+                overflow-x: auto;
+                scroll-behavior: smooth;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding: 0 1rem;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            @media (max-width: 640px) {
+                .nav-scroll {
+                    padding: 0 0.5rem;
+                    gap: 0.375rem;
+                }
+            }
+
+            .nav-scroll::-webkit-scrollbar {
                 display: none;
             }
-        }
 
-        .scroll-arrow:hover {
-            opacity: 1;
-            background: rgba(0, 0, 0, 0.9);
-            border-color: #3b82f6;
-            transform: translateY(-50%) scale(1.1);
-        }
-
-        .scroll-arrow.left {
-            left: -80px;
-        }
-
-        .scroll-arrow.right {
-            right: -80px;
-        }
-
-        .scroll-arrow:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        .scroll-arrow:disabled:hover {
-            transform: translateY(-50%);
-            border-color: transparent;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1rem;
-        }
-
-        @media (max-width: 639px) {
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 0.75rem;
-            }
-        }
-
-        @media (min-width: 640px) {
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 1.25rem;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-                gap: 1.5rem;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+            .nav-item {
+                flex: 0 0 auto;
+                white-space: nowrap;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.75rem;
+                border: 1px solid #1A1A1A;
+                background: #0A0A0A;
+                color: #9CA3AF;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                font-size: 1rem;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
             }
 
-            to {
+            @media (max-width: 640px) {
+                .nav-item {
+                    padding: 0.5rem 1rem;
+                    font-size: 0.875rem;
+                    border-radius: 0.5rem;
+                }
+            }
+
+            .nav-item:hover {
+                background: #121212;
+                color: #FFFFFF;
+                border-color: #404040;
+            }
+
+            .nav-item.active {
+                background: #1F1F1F;
+                color: #FFFFFF;
+                border-color: #404040;
+            }
+
+            .scroll-container {
+                position: relative;
+            }
+
+            .scroll-arrow {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                border: 2px solid transparent;
+                color: white;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                z-index: 10;
+                transition: all 0.3s ease;
+                opacity: 0.7;
+            }
+
+            @media (max-width: 640px) {
+                .scroll-arrow {
+                    display: none;
+                }
+            }
+
+            .scroll-arrow:hover {
                 opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .loading-skeleton {
-            background: linear-gradient(90deg, #121212 25%, #1A1A1A 50%, #121212 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: -200% 0;
+                background: rgba(0, 0, 0, 0.9);
+                border-color: #3b82f6;
+                transform: translateY(-50%) scale(1.1);
             }
 
-            100% {
-                background-position: 200% 0;
+            .scroll-arrow.left {
+                left: -80px;
             }
-        }
-    </style>
+
+            .scroll-arrow.right {
+                right: -80px;
+            }
+
+            .scroll-arrow:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+            }
+
+            .scroll-arrow:disabled:hover {
+                transform: translateY(-50%);
+                border-color: transparent;
+            }
+
+            .content-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 1rem;
+            }
+
+            @media (max-width: 639px) {
+                .content-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                    gap: 0.75rem;
+                }
+            }
+
+            @media (min-width: 640px) {
+                .content-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                    gap: 1.25rem;
+                }
+            }
+
+            @media (min-width: 768px) {
+                .content-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                    gap: 1.5rem;
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .content-grid {
+                    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .fade-in {
+                animation: fadeIn 0.6s ease-out;
+            }
+
+            .loading-skeleton {
+                background: linear-gradient(90deg, #121212 25%, #1A1A1A 50%, #121212 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+            }
+
+            @keyframes shimmer {
+                0% {
+                    background-position: -200% 0;
+                }
+
+                100% {
+                    background-position: 200% 0;
+                }
+            }
+        </style>
 </head>
 
 <body class="bg-amoled min-h-screen text-white pb-16 sm:pb-0" x-data="discoverApp()">
@@ -404,22 +405,15 @@
 
     <!-- Search Overlay -->
     <div x-show="showSearch" class="fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
-        x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
-        <div class="flex-shrink-0 flex items-center justify-between mb-6">
-            <h2 class="text-2xl font-bold text-white">Search</h2>
-            <button @click="toggleSearch()" class="p-2 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                </svg>
-            </button>
-        </div>
-        <div class="relative mb-6">
+        @click.self="toggleSearch()" x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+        x-transition:leave-end="opacity-0">
+        <div class="relative mb-6 mt-4">
             <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
                 @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..."
-                class="w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors">
+                class="w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors"
+                x-ref="searchOverlayInput">
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -429,12 +423,13 @@
         </div>
 
         <!-- Loading State -->
-        <div x-show="isLoadingSearch" class="flex justify-center items-center flex-grow">
+        <div x-show="isLoadingSearch" class="flex justify-center items-center flex-grow" @click.stop>
             <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400"></div>
         </div>
 
         <!-- Results -->
-        <div x-show="!isLoadingSearch && searchResults.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4">
+        <div x-show="!isLoadingSearch && searchResults.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4"
+            @click.stop>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="item in searchResults" :key="item.id">
                     <div @click="watchContent(item)" class="cursor-pointer group">
@@ -454,7 +449,7 @@
 
         <!-- No Results -->
         <div x-show="!isLoadingSearch && searchQuery && searchResults.length === 0"
-            class="flex flex-col justify-center items-center flex-grow text-center text-gray-400">
+            class="flex flex-col justify-center items-center flex-grow text-center text-gray-400" @click.stop>
             <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.467-.881-6.08-2.33" />
@@ -757,13 +752,13 @@
                 toggleSearch() {
                     this.showSearch = !this.showSearch;
                     if (this.showSearch) {
-                        // Focus the search input when opening
-                        this.$nextTick(() => {
-                            const searchInput = document.querySelector('.search-overlay input');
-                            if (searchInput) {
-                                searchInput.focus();
+                        // Focus the search input when opening with delay for mobile keyboard
+                        setTimeout(() => {
+                            if (this.$refs.searchOverlayInput) {
+                                this.$refs.searchOverlayInput.focus();
+                                this.$refs.searchOverlayInput.click();
                             }
-                        });
+                        }, 350);
                     } else {
                         // Clear search when closing
                         this.searchQuery = '';
