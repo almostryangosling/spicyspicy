@@ -295,6 +295,35 @@
             }
         }
 
+        /* Page transition animations */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-transition-out {
+            animation: fadeOut 0.25s ease-out forwards;
+        }
+
+        .page-transition-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
         .card-animate {
             animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             opacity: 0;
@@ -729,7 +758,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <a href="discover.html" class="discover-icon">
+                <a href="#" @click.prevent="navigateWithTransition('discover.html')" class="discover-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2M7 4h10" />
@@ -1188,7 +1217,7 @@
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
         </a>
-        <a href="discover.html"
+        <a href="#" @click.prevent="navigateWithTransition('discover.html')"
             class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -1306,6 +1335,17 @@
                     // setTimeout(() => {
                     //     this.focusCurrentItem();
                     // }, 1200); // Wait for content to load
+
+                    // Add page transition in animation
+                    document.body.classList.add('page-transition-in');
+                },
+
+                // Page transition navigation
+                navigateWithTransition(url) {
+                    document.body.classList.add('page-transition-out');
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 250); // Match fadeOut duration
                 },
 
                 // Hero Carousel Functions
@@ -1699,7 +1739,7 @@
 
                 watchContent(item) {
                     const type = item.media_type === 'movie' ? 'movie' : 'tv';
-                    window.location.href = `watch.html?id=${item.id}&type=${type}`;
+                    this.navigateWithTransition(`watch.html?id=${item.id}&type=${type}`);
                 },
 
                 initMouseWheelScrolling() {

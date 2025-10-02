@@ -251,6 +251,25 @@
                 }
             }
 
+            /* Page transition animations */
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+
+                to {
+                    opacity: 0;
+                }
+            }
+
+            .page-transition-out {
+                animation: fadeOut 0.25s ease-out forwards;
+            }
+
+            .page-transition-in {
+                animation: fadeIn 0.3s ease-in;
+            }
+
             .fade-in {
                 animation: fadeIn 0.6s ease-out;
             }
@@ -411,7 +430,8 @@
     <!-- Header -->
     <div class="container mx-auto px-4 py-6 sm:px-6">
         <div class="flex items-center space-x-4 mb-6">
-            <a href="index.html" class="text-gray-400 hover:text-white transition-colors p-2 -ml-2">
+            <a href="#" @click.prevent="navigateWithTransition('index.html')"
+                class="text-gray-400 hover:text-white transition-colors p-2 -ml-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -595,7 +615,7 @@
     <!-- Bottom Navigation (Mobile Only) -->
     <div
         class="fixed bottom-0 left-0 right-0 bg-amoled border-t border-amoled-border p-2 flex justify-around sm:hidden z-50">
-        <a href="index.html"
+        <a href="#" @click.prevent="navigateWithTransition('index.html')"
             class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -666,6 +686,17 @@
                     this.loadWatchlist();
                     this.loadContent();
                     this.initMobileOptimizations();
+
+                    // Add page transition in animation
+                    document.body.classList.add('page-transition-in');
+                },
+
+                // Page transition navigation
+                navigateWithTransition(url) {
+                    document.body.classList.add('page-transition-out');
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 250); // Match fadeOut duration
                 },
 
                 loadWatchlist() {
@@ -880,7 +911,7 @@
 
                 watchContent(item) {
                     const type = item.first_air_date ? 'tv' : 'movie';
-                    window.location.href = `watch.html?id=${item.id}&type=${type}`;
+                    this.navigateWithTransition(`watch.html?id=${item.id}&type=${type}`);
                 },
 
                 toggleSearch() {

@@ -150,6 +150,35 @@
             animation-delay: 0.3s;
         }
 
+        /* Page transition animations */
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .page-transition-out {
+            animation: fadeOut 0.25s ease-out forwards;
+        }
+
+        .page-transition-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
         /* Netflix/Hulu/Prime-inspired card animations */
         @keyframes slideInFromLeft {
             from {
@@ -361,7 +390,7 @@
 
     <!-- Home Button - Top Left Corner -->
     <div class="fixed top-4 left-2 sm:top-6 sm:left-4 z-50">
-        <a href="index.html"
+        <a href="#" @click.prevent="navigateWithTransition('index.html')"
             class="tv-navigable-item hidden sm:inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 bg-black text-white border border-gray-600 rounded-lg hover:bg-gray-900 hover:border-gray-500 transition-all duration-200 shadow-lg text-sm sm:text-base font-semibold">
             Home
         </a>
@@ -560,7 +589,7 @@
     <!-- Bottom Navigation (Mobile Only) -->
     <div
         class="fixed bottom-0 left-0 right-0 bg-amoled border-t border-amoled-border p-2 flex justify-around sm:hidden z-50">
-        <a href="index.html"
+        <a href="#" @click.prevent="navigateWithTransition('index.html')"
             class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
@@ -651,7 +680,20 @@
                             this.focusCurrentItem();
                         }, 1000);
                     }
-                }, async loadContent() {
+
+                    // Add page transition in animation
+                    document.body.classList.add('page-transition-in');
+                },
+
+                // Page transition navigation
+                navigateWithTransition(url) {
+                    document.body.classList.add('page-transition-out');
+                    setTimeout(() => {
+                        window.location.href = url;
+                    }, 250); // Match fadeOut duration
+                },
+
+                async loadContent() {
                     try {
                         const response = await fetch(`https://api.themoviedb.org/3/${this.contentType}/${this.contentId}?api_key=1070730380f5fee0d87cf0382670b255`);
                         const data = await response.json();
@@ -1120,7 +1162,7 @@
                     const section = this.sections[this.currentSection];
 
                     if (section === 'home') {
-                        window.location.href = 'index.html';
+                        this.navigateWithTransition('index.html');
                         return;
                     }
 
@@ -1326,7 +1368,7 @@
                 watchContent(item) {
                     // Redirect to the content page with the selected item
                     const contentType = item.media_type === 'tv' ? 'tv' : 'movie';
-                    window.location.href = `watch.html?id=${item.id}&type=${contentType}`;
+                    this.navigateWithTransition(`watch.html?id=${item.id}&type=${contentType}`);
                 },
             }
         }
