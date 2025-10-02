@@ -255,6 +255,139 @@
                 animation: fadeIn 0.6s ease-out;
             }
 
+            /* Netflix/Hulu/Prime-inspired card animations */
+            @keyframes slideInFromLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-30px) scale(0.95);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0) scale(1);
+                }
+            }
+
+            @keyframes slideInFromRight {
+                from {
+                    opacity: 0;
+                    transform: translateX(30px) scale(0.95);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0) scale(1);
+                }
+            }
+
+            @keyframes fadeInScale {
+                from {
+                    opacity: 0;
+                    transform: scale(0.9);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .card-animate {
+                animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0;
+            }
+
+            .card-animate-slide-left {
+                animation: slideInFromLeft 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0;
+            }
+
+            .card-animate-slide-right {
+                animation: slideInFromRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                opacity: 0;
+            }
+
+            /* Staggered animation delays for cards */
+            .card-delay-1 {
+                animation-delay: 0.05s;
+            }
+
+            .card-delay-2 {
+                animation-delay: 0.1s;
+            }
+
+            .card-delay-3 {
+                animation-delay: 0.15s;
+            }
+
+            .card-delay-4 {
+                animation-delay: 0.2s;
+            }
+
+            .card-delay-5 {
+                animation-delay: 0.25s;
+            }
+
+            .card-delay-6 {
+                animation-delay: 0.3s;
+            }
+
+            .card-delay-7 {
+                animation-delay: 0.35s;
+            }
+
+            .card-delay-8 {
+                animation-delay: 0.4s;
+            }
+
+            .card-delay-9 {
+                animation-delay: 0.45s;
+            }
+
+            .card-delay-10 {
+                animation-delay: 0.5s;
+            }
+
+            .card-delay-11 {
+                animation-delay: 0.55s;
+            }
+
+            .card-delay-12 {
+                animation-delay: 0.6s;
+            }
+
+            .card-delay-13 {
+                animation-delay: 0.65s;
+            }
+
+            .card-delay-14 {
+                animation-delay: 0.7s;
+            }
+
+            .card-delay-15 {
+                animation-delay: 0.75s;
+            }
+
+            .card-delay-16 {
+                animation-delay: 0.8s;
+            }
+
+            .card-delay-17 {
+                animation-delay: 0.85s;
+            }
+
+            .card-delay-18 {
+                animation-delay: 0.9s;
+            }
+
+            .card-delay-19 {
+                animation-delay: 0.95s;
+            }
+
+            .card-delay-20 {
+                animation-delay: 1s;
+            }
+
             .loading-skeleton {
                 background: linear-gradient(90deg, #121212 25%, #1A1A1A 50%, #121212 75%);
                 background-size: 200% 100%;
@@ -339,8 +472,8 @@
         <!-- Content Grid -->
         <div x-show="!isLoading && content.length > 0" class="content-grid fade-in">
             <template x-for="(item, index) in content" :key="item.id">
-                <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
-                    @click="watchContent(item)">
+                <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border card-animate"
+                    :class="'card-delay-' + ((index % 20) + 1)" @click="watchContent(item)">
                     <div class="relative aspect-[2/3]">
                         <img :src="item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750/1A1A1A/666666?text=No+Image'"
                             :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy">
@@ -431,8 +564,9 @@
         <div x-show="!isLoadingSearch && searchResults.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4"
             @click.stop>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                <template x-for="item in searchResults" :key="item.id">
-                    <div @click="watchContent(item)" class="cursor-pointer group">
+                <template x-for="(item, index) in searchResults" :key="item.id">
+                    <div @click="watchContent(item)" class="cursor-pointer group card-animate"
+                        :class="'card-delay-' + ((index % 20) + 1)">
                         <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="item.title || item.name"
