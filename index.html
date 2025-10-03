@@ -745,7 +745,7 @@
                         </div>
                         <p class="hero-overview" x-text="item.overview || 'No description available.'"></p>
                         <div class="hero-buttons">
-                            <button @click="playHeroContent(item)" class="hero-btn hero-btn-play">
+                            <button @click.stop="playHeroContent(item)" class="hero-btn hero-btn-play">
                                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -1193,7 +1193,7 @@
 
                 <!-- Content Info Section with Trailer Background -->
                 <template x-if="selectedContent">
-                    <div class="flex flex-col sm:relative sm:min-h-[500px] lg:min-h-[600px]">
+                    <div class="flex flex-col sm:relative sm:min-h-[400px] lg:min-h-[450px]">
                         <!-- Trailer Section - Top on Mobile, Background on Desktop -->
                         <div x-show="selectedTrailerUrl"
                             class="relative sm:absolute sm:inset-0 z-0 h-[250px] sm:h-auto">
@@ -1211,25 +1211,25 @@
 
                         <!-- Content Details - Below Trailer on Mobile, Overlay on Desktop -->
                         <div
-                            class="relative sm:absolute sm:bottom-0 sm:left-0 sm:right-0 z-10 p-4 sm:p-6 lg:p-8 bg-amoled sm:bg-transparent">
-                            <div class="flex flex-col lg:flex-row gap-3 sm:gap-6 max-w-4xl">
+                            class="relative sm:absolute sm:bottom-0 sm:left-0 sm:right-0 z-10 p-4 sm:p-4 lg:p-6 bg-amoled sm:bg-transparent">
+                            <div class="flex flex-col lg:flex-row gap-3 sm:gap-4 max-w-4xl">
                                 <!-- Poster -->
                                 <div class="flex-shrink-0 hidden lg:block">
                                     <img :src="selectedContent?.poster_path ? 'https://image.tmdb.org/t/p/w300' + selectedContent.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                         :alt="selectedContent?.title || selectedContent?.name"
-                                        class="w-40 xl:w-48 rounded-lg shadow-2xl">
+                                        class="w-32 xl:w-36 rounded-lg shadow-2xl">
                                 </div>
 
                                 <!-- Details -->
                                 <div class="flex-1 min-w-0">
-                                    <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 sm:mb-3 line-clamp-2"
+                                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 line-clamp-2"
                                         x-text="selectedContent?.title || selectedContent?.name"></h2>
 
                                     <div
-                                        class="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 text-xs sm:text-sm text-gray-100">
+                                        class="flex flex-wrap items-center gap-2 mb-2 text-xs sm:text-xs text-gray-100">
                                         <span x-show="selectedContent?.release_date || selectedContent?.first_air_date"
                                             class="flex items-center">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z">
@@ -1240,7 +1240,7 @@
                                         </span>
 
                                         <span x-show="selectedContent?.vote_average" class="flex items-center">
-                                            <svg class="w-4 h-4 mr-1 text-yellow-400" fill="currentColor"
+                                            <svg class="w-3.5 h-3.5 mr-1 text-yellow-400" fill="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path
                                                     d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z">
@@ -1250,7 +1250,7 @@
                                         </span>
 
                                         <span x-show="selectedContent?.runtime" class="flex items-center">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -1260,7 +1260,7 @@
 
                                         <span x-show="selectedIsShow && selectedContent?.number_of_seasons"
                                             class="flex items-center">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor"
+                                            <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
@@ -1272,44 +1272,44 @@
                                     </div>
 
                                     <div x-show="selectedContent?.genres && selectedContent?.genres.length > 0"
-                                        class="flex flex-wrap gap-2 mb-3 sm:mb-4">
+                                        class="flex flex-wrap gap-1.5 mb-2 sm:mb-3">
                                         <template x-for="genre in (selectedContent?.genres || [])" :key="genre.id">
                                             <span
-                                                class="px-2 py-1 sm:px-3 sm:py-1 bg-blue-600/40 text-blue-100 rounded-full text-xs sm:text-sm font-medium backdrop-blur-md shadow-lg"
+                                                class="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-600/40 text-blue-100 rounded-full text-xs font-medium backdrop-blur-md shadow-lg"
                                                 x-text="genre.name"></span>
                                         </template>
                                     </div>
 
                                     <p x-show="selectedContent?.overview"
-                                        class="text-gray-50 text-sm sm:text-base lg:text-base leading-relaxed mb-4 sm:mb-6 line-clamp-3 lg:line-clamp-4"
+                                        class="text-gray-50 text-xs sm:text-sm lg:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-2 lg:line-clamp-3"
                                         x-text="selectedContent?.overview">
                                     </p>
 
                                     <!-- Action Buttons -->
-                                    <div class="flex flex-wrap gap-2 sm:gap-3">
+                                    <div class="flex flex-wrap gap-2">
                                         <button @click="playFullscreen()"
-                                            class="flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-sm sm:text-base">
+                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
                                             <span>Play</span>
                                         </button>
 
                                         <button @click.stop="toggleWatchlist(selectedContent)"
-                                            class="flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 backdrop-blur-md border rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-sm sm:text-base"
+                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 backdrop-blur-md border rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
                                             :class="isInWatchlist(selectedContent?.id) ? 'bg-white/20 hover:bg-white/30 border-white/40 text-white' : 'bg-white/10 hover:bg-white/20 border-white/20 text-white'">
                                             <span
                                                 x-text="isInWatchlist(selectedContent?.id) ? 'In List' : 'My List'"></span>
                                         </button>
 
                                         <button @click="toggleModalTrailerMute()"
-                                            class="flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-sm sm:text-base"
+                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
                                             :title="isModalTrailerMuted ? 'Unmute Trailer' : 'Mute Trailer'">
-                                            <svg x-show="isModalTrailerMuted" class="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                                            <svg x-show="isModalTrailerMuted" class="h-4 w-4 sm:h-5 sm:w-5 text-white"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
                                             </svg>
-                                            <svg x-show="!isModalTrailerMuted" class="h-5 w-5 sm:h-6 sm:w-6 text-white"
+                                            <svg x-show="!isModalTrailerMuted" class="h-4 w-4 sm:h-5 sm:w-5 text-white"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -1318,8 +1318,8 @@
 
                                         <button x-show="selectedIsShow"
                                             @click="showEpisodeSelector = !showEpisodeSelector"
-                                            class="flex items-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-sm sm:text-base">
-                                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor"
+                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
+                                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M4 6h16M4 12h16M4 18h16"></path>
@@ -1334,8 +1334,8 @@
 
                 <!-- Episode Selector for TV Shows -->
                 <div x-show="selectedIsShow && showEpisodeSelector"
-                    class="p-4 sm:p-6 bg-amoled border-t border-amoled-border max-h-[400px] sm:max-h-96 overflow-y-auto">
-                    <h3 class="text-xl font-bold mb-4 text-white">Episodes</h3>
+                    class="p-3 sm:p-4 bg-amoled border-t border-amoled-border max-h-[400px] sm:max-h-96 overflow-y-auto">
+                    <h3 class="text-lg font-bold mb-3 text-white">Episodes</h3>
 
                     <!-- Season Selector -->
                     <div class="mb-4">
@@ -1661,6 +1661,9 @@
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
 
+                    // Mute the current trailer before transitioning
+                    this.muteHeroTrailer();
+
                     const realLength = items.length - 2; // Subtract the 2 clones
 
                     this.heroTransition = true;
@@ -1686,6 +1689,9 @@
                 prevHeroSlide() {
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
+
+                    // Mute the current trailer before transitioning
+                    this.muteHeroTrailer();
 
                     const realLength = items.length - 2; // Subtract the 2 clones
 
@@ -1716,6 +1722,7 @@
 
                 handleHeroTouchStart(e) {
                     this.heroTouchStartX = e.touches[0].clientX;
+                    this.heroTouchEndX = e.touches[0].clientX; // Initialize to same position
                     this.stopHeroCarousel(); // Stop auto-rotation while swiping
                 },
 
@@ -1727,6 +1734,7 @@
                     const swipeThreshold = 50; // Minimum swipe distance in pixels
                     const diff = this.heroTouchStartX - this.heroTouchEndX;
 
+                    // Only navigate if the swipe distance exceeds the threshold
                     if (Math.abs(diff) > swipeThreshold) {
                         if (diff > 0) {
                             // Swiped left - go to next slide
@@ -1736,8 +1744,13 @@
                             this.prevHeroSlide();
                         }
                     }
+                    // If diff is less than threshold, it's a tap/click - do nothing
 
-                    // Restart auto-rotation after swipe
+                    // Reset touch positions
+                    this.heroTouchStartX = 0;
+                    this.heroTouchEndX = 0;
+
+                    // Restart auto-rotation after interaction
                     this.startHeroCarousel();
                 },
 
@@ -2148,7 +2161,8 @@
                 toggleModalTrailerMute() {
                     this.isModalTrailerMuted = !this.isModalTrailerMuted;
 
-                    const trailerIframe = document.querySelector('.overflow-hidden iframe');
+                    // Select the modal trailer iframe - works for both mobile and desktop
+                    const trailerIframe = document.querySelector('.sm\\:absolute iframe') || document.querySelector('.overflow-hidden iframe');
                     if (trailerIframe && trailerIframe.contentWindow) {
                         try {
                             const command = this.isModalTrailerMuted ? 'mute' : 'unMute';
@@ -2187,6 +2201,31 @@
                             }
                         }
                     });
+                },
+
+                muteHeroTrailer() {
+                    // Only mute if currently unmuted
+                    if (!this.isHeroTrailerMuted) {
+                        this.isHeroTrailerMuted = true;
+
+                        const heroTrailerIframes = document.querySelectorAll('.hero-slide iframe');
+                        heroTrailerIframes.forEach(iframe => {
+                            if (iframe && iframe.contentWindow) {
+                                try {
+                                    iframe.contentWindow.postMessage(
+                                        JSON.stringify({
+                                            event: 'command',
+                                            func: 'mute',
+                                            args: ''
+                                        }),
+                                        '*'
+                                    );
+                                } catch (e) {
+                                    console.log('Failed to mute hero trailer:', e);
+                                }
+                            }
+                        });
+                    }
                 },
 
                 playHeroContent(item) {
