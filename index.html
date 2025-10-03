@@ -67,27 +67,6 @@
             max-width: 100vw;
         }
 
-        /* Hide scrollbar when installed as PWA */
-        @media all and (display-mode: fullscreen),
-        all and (display-mode: standalone),
-        all and (display-mode: minimal-ui) {
-
-            html,
-            body {
-                overflow: hidden;
-                scrollbar-width: none;
-                /* Firefox */
-                -ms-overflow-style: none;
-                /* IE and Edge */
-            }
-
-            html::-webkit-scrollbar,
-            body::-webkit-scrollbar {
-                display: none;
-                /* Chrome, Safari, Opera */
-            }
-        }
-
         .search-container {
             position: relative;
             width: 100%;
