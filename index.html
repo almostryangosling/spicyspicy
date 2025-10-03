@@ -1943,14 +1943,20 @@
                 },
 
                 getFilteredWatchlist() {
-                    // Show all items on both mobile and desktop
-                    // No need to filter by contentType - users want to see all their watchlist
+                    // On mobile (width < 640px), filter by contentType for double-tap functionality
+                    // On desktop, show all items (no filtering)
+                    if (window.innerWidth < 640) {
+                        return this.watchlist.filter(item => item.media_type === this.contentType);
+                    }
                     return this.watchlist;
                 },
 
                 getFilteredContinueWatching() {
-                    // Show all items on both mobile and desktop
-                    // No need to filter by contentType - users want to see all continue watching
+                    // On mobile (width < 640px), filter by contentType for double-tap functionality
+                    // On desktop, show all items (no filtering)
+                    if (window.innerWidth < 640) {
+                        return this.continueWatching.filter(item => item.media_type === this.contentType);
+                    }
                     return this.continueWatching;
                 },
 
