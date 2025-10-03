@@ -20,6 +20,17 @@
         <link rel="apple-touch-icon" href="appicon.png">
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
+        <style>
+            /* Prevent flash of unstyled content */
+            body {
+                opacity: 1;
+                transition: opacity 0.3s ease-in;
+            }
+
+            body.page-transition-out {
+                opacity: 0;
+            }
+        </style>
         <script>
             tailwind.config = {
                 theme: {
@@ -251,24 +262,7 @@
                 }
             }
 
-            /* Page transition animations */
-            @keyframes fadeOut {
-                from {
-                    opacity: 1;
-                }
-
-                to {
-                    opacity: 0;
-                }
-            }
-
-            .page-transition-out {
-                animation: fadeOut 0.25s ease-out forwards;
-            }
-
-            .page-transition-in {
-                animation: fadeIn 0.3s ease-in;
-            }
+            /* Page transition animations - removed, now handled by body opacity */
 
             .fade-in {
                 animation: fadeIn 0.6s ease-out;
@@ -687,8 +681,8 @@
                     this.loadContent();
                     this.initMobileOptimizations();
 
-                    // Add page transition in animation
-                    document.body.classList.add('page-transition-in');
+                    // Remove transition class after page loads
+                    document.body.classList.remove('page-transition-out');
                 },
 
                 // Page transition navigation
@@ -701,10 +695,8 @@
                     document.body.classList.add('page-transition-out');
                     setTimeout(() => {
                         window.location.href = url;
-                    }, 250); // Match fadeOut duration
-                },
-
-                loadWatchlist() {
+                    }, 300); // Match transition duration
+                }, loadWatchlist() {
                     const saved = localStorage.getItem('streamSearch_watchlist');
                     if (saved) {
                         this.watchlist = JSON.parse(saved);

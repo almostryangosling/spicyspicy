@@ -19,6 +19,17 @@
     <link rel="apple-touch-icon" href="appicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            opacity: 1;
+            transition: opacity 0.3s ease-in;
+        }
+
+        body.page-transition-out {
+            opacity: 0;
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -150,34 +161,7 @@
             animation-delay: 0.3s;
         }
 
-        /* Page transition animations */
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .page-transition-out {
-            animation: fadeOut 0.25s ease-out forwards;
-        }
-
-        .page-transition-in {
-            animation: fadeIn 0.3s ease-in;
-        }
+        /* Page transition animations - removed, now handled by body opacity */
 
         /* Netflix/Hulu/Prime-inspired card animations */
         @keyframes slideInFromLeft {
@@ -681,11 +665,9 @@
                         }, 1000);
                     }
 
-                    // Add page transition in animation
-                    document.body.classList.add('page-transition-in');
-                },
-
-                // Page transition navigation
+                    // Remove transition class after page loads
+                    document.body.classList.remove('page-transition-out');
+                },                // Page transition navigation
                 navigateWithTransition(url) {
                     // Close search overlay before navigating
                     this.showSearch = false;
@@ -695,10 +677,8 @@
                     document.body.classList.add('page-transition-out');
                     setTimeout(() => {
                         window.location.href = url;
-                    }, 250); // Match fadeOut duration
-                },
-
-                async loadContent() {
+                    }, 300); // Match transition duration
+                }, async loadContent() {
                     try {
                         const response = await fetch(`https://api.themoviedb.org/3/${this.contentType}/${this.contentId}?api_key=1070730380f5fee0d87cf0382670b255`);
                         const data = await response.json();

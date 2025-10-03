@@ -21,6 +21,17 @@
     <!-- Note: Using Tailwind CDN for simplicity in this static web app.
          For production with build process, consider installing via npm and using PostCSS. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
+    <style>
+        /* Prevent flash of unstyled content */
+        body {
+            opacity: 1;
+            transition: opacity 0.3s ease-in;
+        }
+
+        body.page-transition-out {
+            opacity: 0;
+        }
+    </style>
     <script>
         tailwind.config = {
             theme: {
@@ -295,34 +306,7 @@
             }
         }
 
-        /* Page transition animations */
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        .page-transition-out {
-            animation: fadeOut 0.25s ease-out forwards;
-        }
-
-        .page-transition-in {
-            animation: fadeIn 0.3s ease-in;
-        }
+        /* Page transition animations - removed, now handled by body opacity */
 
         .card-animate {
             animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -1331,8 +1315,8 @@
                     //     this.focusCurrentItem();
                     // }, 1200); // Wait for content to load
 
-                    // Add page transition in animation
-                    document.body.classList.add('page-transition-in');
+                    // Remove transition class after page loads
+                    document.body.classList.remove('page-transition-out');
                 },
 
                 // Page transition navigation
@@ -1345,10 +1329,8 @@
                     document.body.classList.add('page-transition-out');
                     setTimeout(() => {
                         window.location.href = url;
-                    }, 250); // Match fadeOut duration
-                },
-
-                // Hero Carousel Functions
+                    }, 300); // Match transition duration
+                },                // Hero Carousel Functions
                 getHeroItems() {
                     // Use trending content filtered by content type (10 items)
                     const trendingItems = this.trending && this.trending.length > 0
