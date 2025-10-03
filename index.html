@@ -1340,7 +1340,7 @@
                     <!-- Season Selector -->
                     <div class="mb-4">
                         <label class="block text-sm font-medium text-gray-300 mb-2">Season</label>
-                        <select x-model="selectedSeason" @change="loadModalEpisodes()"
+                        <select x-model.number="selectedSeason" @change="loadModalEpisodes()"
                             class="w-full px-3 py-2 border border-amoled-border rounded-md bg-amoled-light text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <template x-for="season in selectedSeasons" :key="season">
                                 <option :value="season" x-text="'Season ' + season"></option>
@@ -2083,8 +2083,9 @@
 
                     // For TV shows from continue watching, restore the last watched season and episode
                     if (this.selectedIsShow && item.last_season && item.last_episode) {
-                        this.selectedSeason = item.last_season;
-                        this.selectedEpisode = item.last_episode;
+                        // Ensure values are numbers for proper Alpine.js binding
+                        this.selectedSeason = Number(item.last_season);
+                        this.selectedEpisode = Number(item.last_episode);
                     } else {
                         this.selectedSeason = 1;
                         this.selectedEpisode = 1;
@@ -2107,6 +2108,14 @@
 
                         if (this.selectedIsShow) {
                             this.selectedSeasons = Array.from({ length: data.number_of_seasons }, (_, i) => i + 1);
+
+                            // Ensure selectedSeason is within valid range
+                            if (this.selectedSeason > data.number_of_seasons) {
+                                this.selectedSeason = data.number_of_seasons;
+                            }
+                            if (this.selectedSeason < 1) {
+                                this.selectedSeason = 1;
+                            }
                         }
                     } catch (error) {
                         console.error('Error loading content:', error);
@@ -2141,9 +2150,15 @@
                     if (!this.selectedIsShow) return;
 
                     try {
-                        const response = await fetch(`https://api.themoviedb.org/3/tv/${this.selectedContentId}/season/${this.selectedSeason}?api_key=${this.apiKey}`);
+                        // Ensure selectedSeason is a valid number
+                        const seasonToLoad = parseInt(this.selectedSeason) || 1;
+
+                        const response = await fetch(`https://api.themoviedb.org/3/tv/${this.selectedContentId}/season/${seasonToLoad}?api_key=${this.apiKey}`);
                         const data = await response.json();
                         this.selectedEpisodes = data.episodes || [];
+
+                        // Re-affirm the selected season to ensure Alpine.js binding is correct
+                        this.selectedSeason = seasonToLoad;
                     } catch (error) {
                         console.error('Error loading episodes:', error);
                         this.selectedEpisodes = [];
