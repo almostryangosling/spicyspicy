@@ -1661,8 +1661,9 @@
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
 
-                    // Mute the current trailer before transitioning
+                    // Mute the current trailer and reset state before transitioning
                     this.muteHeroTrailer();
+                    this.isHeroTrailerMuted = true; // Reset mute state for new slide
 
                     const realLength = items.length - 2; // Subtract the 2 clones
 
@@ -1690,8 +1691,9 @@
                     const items = this.getHeroItems();
                     if (items.length === 0) return;
 
-                    // Mute the current trailer before transitioning
+                    // Mute the current trailer and reset state before transitioning
                     this.muteHeroTrailer();
+                    this.isHeroTrailerMuted = true; // Reset mute state for new slide
 
                     const realLength = items.length - 2; // Subtract the 2 clones
 
@@ -1780,8 +1782,8 @@
                     // Remove if already exists
                     this.continueWatching = this.continueWatching.filter(cw => cw.id !== item.id);
 
-                    // Add to beginning (most recent)
-                    this.continueWatching.unshift({
+                    // Prepare the continue watching item
+                    const continueWatchingItem = {
                         id: item.id,
                         title: item.title || item.name,
                         media_type: item.media_type,
@@ -1790,7 +1792,16 @@
                         vote_average: item.vote_average,
                         overview: item.overview,
                         added_at: new Date().toISOString()
-                    });
+                    };
+
+                    // For TV shows, store the last watched season and episode
+                    if (item.media_type === 'tv') {
+                        continueWatchingItem.last_season = item.last_season || 1;
+                        continueWatchingItem.last_episode = item.last_episode || 1;
+                    }
+
+                    // Add to beginning (most recent)
+                    this.continueWatching.unshift(continueWatchingItem);
 
                     // Keep only last 20 items
                     if (this.continueWatching.length > 20) {
@@ -2069,8 +2080,15 @@
                     this.selectedIsShow = this.selectedContentType === 'tv';
                     this.showModal = true;
                     this.showEpisodeSelector = false;
-                    this.selectedSeason = 1;
-                    this.selectedEpisode = 1;
+
+                    // For TV shows from continue watching, restore the last watched season and episode
+                    if (this.selectedIsShow && item.last_season && item.last_episode) {
+                        this.selectedSeason = item.last_season;
+                        this.selectedEpisode = item.last_episode;
+                    } else {
+                        this.selectedSeason = 1;
+                        this.selectedEpisode = 1;
+                    }
 
                     // Load content details
                     await this.loadModalContent();
@@ -2183,8 +2201,12 @@
                 toggleHeroTrailerMute() {
                     this.isHeroTrailerMuted = !this.isHeroTrailerMuted;
 
-                    const heroTrailerIframes = document.querySelectorAll('.hero-slide iframe');
-                    heroTrailerIframes.forEach(iframe => {
+                    // Only target the currently active slide's iframe
+                    const heroSlides = document.querySelectorAll('.hero-slide');
+                    const currentSlide = heroSlides[this.currentHeroSlide];
+
+                    if (currentSlide) {
+                        const iframe = currentSlide.querySelector('iframe');
                         if (iframe && iframe.contentWindow) {
                             try {
                                 const command = this.isHeroTrailerMuted ? 'mute' : 'unMute';
@@ -2200,7 +2222,7 @@
                                 console.log('Failed to toggle hero mute:', e);
                             }
                         }
-                    });
+                    }
                 },
 
                 muteHeroTrailer() {
@@ -2208,8 +2230,12 @@
                     if (!this.isHeroTrailerMuted) {
                         this.isHeroTrailerMuted = true;
 
-                        const heroTrailerIframes = document.querySelectorAll('.hero-slide iframe');
-                        heroTrailerIframes.forEach(iframe => {
+                        // Only mute the currently active slide's iframe
+                        const heroSlides = document.querySelectorAll('.hero-slide');
+                        const currentSlide = heroSlides[this.currentHeroSlide];
+
+                        if (currentSlide) {
+                            const iframe = currentSlide.querySelector('iframe');
                             if (iframe && iframe.contentWindow) {
                                 try {
                                     iframe.contentWindow.postMessage(
@@ -2224,7 +2250,7 @@
                                     console.log('Failed to mute hero trailer:', e);
                                 }
                             }
-                        });
+                        }
                     }
                 },
 
@@ -2269,6 +2295,26 @@
 
                     this.fullscreenPlayerUrl = url;
                     this.showFullscreenPlayer = true;
+
+                    // Track as watched (for continue watching)
+                    const continueWatchingData = {
+                        id: contentId,
+                        title: item.title || item.name,
+                        media_type: isShow ? 'tv' : 'movie',
+                        poster_path: item.poster_path,
+                        release_date: item.release_date || item.first_air_date,
+                        vote_average: item.vote_average,
+                        overview: item.overview
+                    };
+
+                    // For TV shows, save season 1 episode 1
+                    if (isShow) {
+                        continueWatchingData.last_season = 1;
+                        continueWatchingData.last_episode = 1;
+                    }
+
+                    this.addToContinueWatching(continueWatchingData);
+                    localStorage.setItem('streamSearch_continueWatching_update', JSON.stringify(continueWatchingData));
                 },
 
                 playFullscreen() {
@@ -2338,6 +2384,12 @@
                         vote_average: this.selectedContent.vote_average,
                         overview: this.selectedContent.overview
                     };
+
+                    // For TV shows, save the current season and episode
+                    if (this.selectedContentType === 'tv') {
+                        continueWatchingData.last_season = this.selectedSeason;
+                        continueWatchingData.last_episode = this.selectedEpisode;
+                    }
 
                     // Add to continue watching on current page
                     this.addToContinueWatching(continueWatchingData);
