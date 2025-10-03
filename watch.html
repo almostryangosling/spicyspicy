@@ -17,6 +17,13 @@
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300A86B' d='M16 2C12.1 2 9 5.1 9 9c0 1.4.4 2.7 1 3.8C8.7 13.8 7 15.8 7 18c0 3.9 3.1 7 7 7h4c3.9 0 7-3.1 7-7 0-2.2-1.7-4.2-3-5.2.6-1.1 1-2.4 1-3.8 0-3.9-3.1-7-7-7z'/%3E%3Cpath fill='%23008000' d='M16 4c2.8 0 5 2.2 5 5 0 1-.3 2-.8 2.8-.2.3-.4.6-.6.9-.5-.1-1-.2-1.6-.2-2.8 0-5 2.2-5 5 0 .6.1 1.1.3 1.6-.3-.2-.6-.4-.9-.6C12.3 17 12 16 12 15c0-2.8 2.2-5 5-5 .6 0 1.1.1 1.6.3-.2-.3-.4-.6-.6-.9C18.3 8.3 18 7 18 6c0-2.8 2.2-5 5-5z'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="appicon.jpg">
+
+    <!-- Performance: Resource Hints -->
+    <link rel="preconnect" href="https://api.themoviedb.org" crossorigin>
+    <link rel="preconnect" href="https://image.tmdb.org" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.3/cdn.min.js" defer></script>
     <script>
@@ -256,61 +263,33 @@
             animation-delay: 0.3s;
         }
 
-        .card-delay-7 {
-            animation-delay: 0.35s;
-        }
 
-        .card-delay-8 {
-            animation-delay: 0.4s;
-        }
 
-        .card-delay-9 {
-            animation-delay: 0.45s;
-        }
 
-        .card-delay-10 {
-            animation-delay: 0.5s;
-        }
 
-        .card-delay-11 {
-            animation-delay: 0.55s;
-        }
 
-        .card-delay-12 {
-            animation-delay: 0.6s;
-        }
 
-        .card-delay-13 {
-            animation-delay: 0.65s;
-        }
 
-        .card-delay-14 {
-            animation-delay: 0.7s;
-        }
 
-        .card-delay-15 {
-            animation-delay: 0.75s;
-        }
 
-        .card-delay-16 {
-            animation-delay: 0.8s;
-        }
 
-        .card-delay-17 {
-            animation-delay: 0.85s;
-        }
 
-        .card-delay-18 {
-            animation-delay: 0.9s;
-        }
 
-        .card-delay-19 {
-            animation-delay: 0.95s;
-        }
 
-        .card-delay-20 {
-            animation-delay: 1s;
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         .tv-navigable-item {
             transition: all 0.3s ease;
@@ -425,12 +404,13 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="(item, index) in searchResults" :key="item.id">
                     <div @click="watchContent(item)" class="cursor-pointer group card-animate"
-                        :class="'card-delay-' + ((index % 20) + 1)">
+                        :class="'card-delay-' + ((index % 6) + 1)">
                         <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="item.title || item.name"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                @error="event => { event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'; }">
+                                loading="lazy" decoding="async"
+                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                             <h3 class="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white"
                                 x-text="item.title || item.name"></h3>
@@ -471,7 +451,8 @@
                         <div class="flex-shrink-0">
                             <img :src="content.poster_path ? 'https://image.tmdb.org/t/p/w300' + content.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="content.title || content.name" class="w-32 sm:w-40 lg:w-48 rounded-lg shadow-lg"
-                                @error="event => { event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'; }">
+                                loading="lazy" decoding="async"
+                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                         </div>
 
                         <!-- Details -->
@@ -554,14 +535,14 @@
                             <div class="tv-navigable-item episode-card bg-amoled-light rounded-lg p-2 sm:p-4 cursor-pointer border border-amoled-border hover:bg-amoled-card transition-colors card-animate-slide-left"
                                 :class="[
                                     selectedEpisode === episode.episode_number ? 'active border-blue-500 bg-amoled-card' : '',
-                                    'card-delay-' + ((index % 20) + 1)
+                                    'card-delay-' + ((index % 6) + 1)
                                 ]" @click="selectEpisode(episode.episode_number)">
                                 <div
                                     class="aspect-video mb-2 sm:mb-3 bg-gray-600 rounded flex items-center justify-center">
                                     <img :src="episode.still_path ? 'https://image.tmdb.org/t/p/w300' + episode.still_path : 'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number"
                                         :alt="'Episode ' + episode.episode_number"
-                                        class="w-full h-full object-cover rounded"
-                                        @error="event => { event.target.src = 'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number; }">
+                                        class="w-full h-full object-cover rounded" loading="lazy" decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number">
                                 </div>
                                 <h3 class="font-medium text-xs sm:text-sm mb-1 text-white"
                                     x-text="'Episode ' + episode.episode_number + ': ' + episode.name"></h3>
