@@ -1311,6 +1311,9 @@
                         url = `https://vidfast.pro/movie/${this.selectedContentId}?autoPlay=true`;
                     }
 
+                    // Stop the trailer before opening fullscreen player
+                    this.stopModalTrailer();
+
                     this.fullscreenPlayerUrl = url;
                     this.showFullscreenPlayer = true;
                     this.showModal = false;
@@ -1320,6 +1323,37 @@
                     this.showFullscreenPlayer = false;
                     this.fullscreenPlayerUrl = '';
                     this.showModal = true;
+
+                    // Reload the trailer when returning to modal
+                    if (this.selectedContentId && this.selectedContentType) {
+                        this.loadModalTrailer();
+                    }
+                },
+
+                stopModalTrailer() {
+                    // Send pause command to YouTube iframe
+                    const trailerIframe = document.querySelector('.overflow-hidden iframe');
+                    if (trailerIframe && trailerIframe.contentWindow) {
+                        try {
+                            trailerIframe.contentWindow.postMessage(
+                                JSON.stringify({
+                                    event: 'command',
+                                    func: 'pauseVideo',
+                                    args: ''
+                                }),
+                                '*'
+                            );
+                        } catch (e) {
+                            console.log('Failed to pause trailer:', e);
+                        }
+                    }
+
+                    // Clear the trailer URL to destroy the iframe
+                    const currentTrailerUrl = this.selectedTrailerUrl;
+                    this.selectedTrailerUrl = '';
+
+                    // Store it temporarily to restore later if needed
+                    this._pausedTrailerUrl = currentTrailerUrl;
                 }
             }
         }
