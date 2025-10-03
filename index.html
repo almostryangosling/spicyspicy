@@ -1337,6 +1337,11 @@
 
                 // Page transition navigation
                 navigateWithTransition(url) {
+                    // Close search overlay before navigating
+                    this.showSearch = false;
+                    this.searchQuery = '';
+                    this.results = [];
+
                     document.body.classList.add('page-transition-out');
                     setTimeout(() => {
                         window.location.href = url;

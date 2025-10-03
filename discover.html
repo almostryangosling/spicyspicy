@@ -693,6 +693,11 @@
 
                 // Page transition navigation
                 navigateWithTransition(url) {
+                    // Close search overlay before navigating
+                    this.showSearch = false;
+                    this.searchQuery = '';
+                    this.searchResults = [];
+
                     document.body.classList.add('page-transition-out');
                     setTimeout(() => {
                         window.location.href = url;
@@ -929,6 +934,13 @@
                         this.searchQuery = '';
                         this.searchResults = [];
                     }
+                },
+
+                closeSearch() {
+                    // Helper method to explicitly close search
+                    this.showSearch = false;
+                    this.searchQuery = '';
+                    this.searchResults = [];
                 },
 
                 async searchContent() {
