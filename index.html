@@ -759,6 +759,22 @@
                                 </svg>
                                 <span x-text="isInWatchlist(item.id) ? 'In List' : 'My List'"></span>
                             </button>
+                            <button x-show="heroTrailers[item.id]" @click.stop="toggleHeroTrailerMute()"
+                                class="hero-btn hero-btn-info"
+                                :title="isHeroTrailerMuted ? 'Unmute Trailer' : 'Mute Trailer'">
+                                <svg x-show="isHeroTrailerMuted" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                                </svg>
+                                <svg x-show="!isHeroTrailerMuted" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1465,6 +1481,7 @@
                 selectedIsShow: false,
                 selectedTrailerUrl: '',
                 isModalTrailerMuted: true,
+                isHeroTrailerMuted: true,
                 selectedSeason: 1,
                 selectedEpisode: 1,
                 selectedSeasons: [],
@@ -1594,6 +1611,38 @@
                     }
                 },
 
+                async loadCurrentHeroTrailer() {
+                    const items = this.getHeroItems();
+                    if (items.length === 0) return;
+
+                    // Get the actual current item (accounting for the duplicate slides)
+                    const currentItem = items[this.currentHeroSlide];
+                    if (!currentItem || this.heroTrailers[currentItem.id]) return;
+
+                    try {
+                        const mediaType = currentItem.media_type || (currentItem.first_air_date ? 'tv' : 'movie');
+                        const response = await fetch(`https://api.themoviedb.org/3/${mediaType}/${currentItem.id}/videos?api_key=${this.apiKey}`);
+                        const data = await response.json();
+
+                        const trailer = data.results?.find(video =>
+                            video.type === 'Trailer' &&
+                            video.site === 'YouTube' &&
+                            video.official === true
+                        ) || data.results?.find(video =>
+                            video.type === 'Trailer' && video.site === 'YouTube'
+                        );
+
+                        if (trailer) {
+                            this.heroTrailers = {
+                                ...this.heroTrailers,
+                                [currentItem.id]: `https://www.youtube.com/embed/${trailer.key}?enablejsapi=1`
+                            };
+                        }
+                    } catch (error) {
+                        console.error('Error loading hero trailer:', error);
+                    }
+                },
+
                 startHeroCarousel() {
                     // Auto-rotate every 15 seconds
                     this.heroCarouselInterval = setInterval(() => {
@@ -1629,6 +1678,9 @@
                             }, 50);
                         }, 300);
                     }
+
+                    // Load trailer for the new slide
+                    setTimeout(() => this.loadCurrentHeroTrailer(), 350);
                 },
 
                 prevHeroSlide() {
@@ -1652,6 +1704,9 @@
                             }, 50);
                         }, 300);
                     }
+
+                    // Load trailer for the new slide
+                    setTimeout(() => this.loadCurrentHeroTrailer(), 350);
                 }, goToHeroSlide(index) {
                     this.currentHeroSlide = index;
                     // Reset auto-rotation timer
@@ -1766,15 +1821,15 @@
                         // Combine and store
                         this.trending = [...movies, ...tvShows];
 
-                        // Load hero trailers after trending data is loaded
-                        this.loadHeroTrailers();
+                        // Load hero trailers only on mobile devices (hero carousel is mobile-only)
+                        if (this.isMobileDevice()) {
+                            this.loadCurrentHeroTrailer();
+                        }
                     } catch (error) {
                         console.error('Error loading trending content:', error);
                         this.trending = [];
                     }
-                },
-
-                async loadPopularMovies() {
+                }, async loadPopularMovies() {
                     try {
                         const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${this.apiKey}`);
                         const data = await response.json();
@@ -2065,6 +2120,23 @@
                 },
 
                 closeModal() {
+                    // Stop the modal trailer before closing
+                    const modalTrailerIframe = document.querySelector('.sm\\:absolute iframe');
+                    if (modalTrailerIframe && modalTrailerIframe.contentWindow) {
+                        try {
+                            modalTrailerIframe.contentWindow.postMessage(
+                                JSON.stringify({
+                                    event: 'command',
+                                    func: 'stopVideo',
+                                    args: ''
+                                }),
+                                '*'
+                            );
+                        } catch (e) {
+                            console.error('Failed to stop modal trailer:', e);
+                        }
+                    }
+
                     this.showModal = false;
                     this.selectedContent = null;
                     this.selectedTrailerUrl = '';
@@ -2092,6 +2164,29 @@
                             console.log('Failed to toggle mute:', e);
                         }
                     }
+                },
+
+                toggleHeroTrailerMute() {
+                    this.isHeroTrailerMuted = !this.isHeroTrailerMuted;
+
+                    const heroTrailerIframes = document.querySelectorAll('.hero-slide iframe');
+                    heroTrailerIframes.forEach(iframe => {
+                        if (iframe && iframe.contentWindow) {
+                            try {
+                                const command = this.isHeroTrailerMuted ? 'mute' : 'unMute';
+                                iframe.contentWindow.postMessage(
+                                    JSON.stringify({
+                                        event: 'command',
+                                        func: command,
+                                        args: ''
+                                    }),
+                                    '*'
+                                );
+                            } catch (e) {
+                                console.log('Failed to toggle hero mute:', e);
+                            }
+                        }
+                    });
                 },
 
                 playHeroContent(item) {
@@ -2237,11 +2332,11 @@
                                 this.stopHeroCarousel();
                                 this.startHeroCarousel();
 
-                                // Reload trailers for new content type
-                                this.loadHeroTrailers();
-                            }
-
-                            lastTapTime = 0; // Reset to prevent triple tap
+                                // Reload trailer for new content type (only on mobile)
+                                if (this.isMobileDevice()) {
+                                    setTimeout(() => this.loadCurrentHeroTrailer(), 100);
+                                }
+                            } lastTapTime = 0; // Reset to prevent triple tap
                         } else {
                             lastTapTime = currentTime;
                         }
