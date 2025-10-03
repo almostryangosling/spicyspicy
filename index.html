@@ -370,33 +370,33 @@
             animation-delay: 0.3s;
         }
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
 
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /* Hero Carousel Styles */
         .hero-carousel {
@@ -755,9 +755,9 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
+                                        decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -801,9 +801,8 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -845,9 +844,8 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -902,9 +900,9 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
+                                        decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -961,9 +959,8 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title">
@@ -1020,9 +1017,8 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.name"
-                                        class="w-full h-full object-cover" loading="lazy" @error="event = decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.name">
@@ -1079,9 +1075,9 @@
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event = loading="lazy" decoding="async"> {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
+                                        decoding="async"
+                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -1150,8 +1146,8 @@
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="item.title || item.name"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                loading="lazy"
-                                @error="event = decoding="async"> { event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'; }">
+                                loading="lazy" decoding="async"
+                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                             <h3 class="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white"
                                 x-text="item.title || item.name"></h3>
