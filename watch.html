@@ -46,11 +46,6 @@
         }
     </script>
     <style>
-        /* Alpine.js cloak - prevents flash of unstyled content */
-        [x-cloak] {
-            display: none !important;
-        }
-
         .player-container {
             position: relative;
             padding-bottom: 56.25%;
@@ -381,7 +376,7 @@
     </div>
 
     <!-- Search Overlay -->
-    <div x-show="showSearch" x-cloak class="fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
+    <div x-show="showSearch" class="fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
         @click.self="toggleSearch()" x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
@@ -414,8 +409,8 @@
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="item.title || item.name"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                loading="lazy" decoding="async"
-                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                @error="event = loading=" lazy" decoding="async"> { event.target.src =
+                            'https://via.placeholder.com/300x450?text=No+Image'; }">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                             <h3 class="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white"
                                 x-text="item.title || item.name"></h3>
@@ -456,8 +451,8 @@
                         <div class="flex-shrink-0">
                             <img :src="content.poster_path ? 'https://image.tmdb.org/t/p/w300' + content.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="content.title || content.name" class="w-32 sm:w-40 lg:w-48 rounded-lg shadow-lg"
-                                loading="lazy" decoding="async"
-                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                @error="event = loading=" lazy" decoding="async"> { event.target.src =
+                            'https://via.placeholder.com/300x450?text=No+Image'; }">
                         </div>
 
                         <!-- Details -->
@@ -546,8 +541,9 @@
                                     class="aspect-video mb-2 sm:mb-3 bg-gray-600 rounded flex items-center justify-center">
                                     <img :src="episode.still_path ? 'https://image.tmdb.org/t/p/w300' + episode.still_path : 'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number"
                                         :alt="'Episode ' + episode.episode_number"
-                                        class="w-full h-full object-cover rounded" loading="lazy" decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number">
+                                        class="w-full h-full object-cover rounded" @error="event = loading=" lazy"
+                                        decoding="async"> { event.target.src =
+                                    'https://via.placeholder.com/300x169?text=Episode+' + episode.episode_number; }">
                                 </div>
                                 <h3 class="font-medium text-xs sm:text-sm mb-1 text-white"
                                     x-text="'Episode ' + episode.episode_number + ': ' + episode.name"></h3>

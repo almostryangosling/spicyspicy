@@ -17,16 +17,10 @@
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%2300A86B' d='M16 2C12.1 2 9 5.1 9 9c0 1.4.4 2.7 1 3.8C8.7 13.8 7 15.8 7 18c0 3.9 3.1 7 7 7h4c3.9 0 7-3.1 7-7 0-2.2-1.7-4.2-3-5.2.6-1.1 1-2.4 1-3.8 0-3.9-3.1-7-7-7z'/%3E%3Cpath fill='%23008000' d='M16 4c2.8 0 5 2.2 5 5 0 1-.3 2-.8 2.8-.2.3-.4.6-.6.9-.5-.1-1-.2-1.6-.2-2.8 0-5 2.2-5 5 0 .6.1 1.1.3 1.6-.3-.2-.6-.4-.9-.6C12.3 17 12 16 12 15c0-2.8 2.2-5 5-5 .6 0 1.1.1 1.6.3-.2-.3-.4-.6-.6-.9C18.3 8.3 18 7 18 6c0-2.8 2.2-5 5-5z'/%3E%3C/svg%3E">
     <link rel="apple-touch-icon" href="appicon.jpg">
-
-    <!-- Performance: Resource Hints -->
-    <link rel="preconnect" href="https://api.themoviedb.org" crossorigin>
-    <link rel="preconnect" href="https://image.tmdb.org" crossorigin>
-    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Note: Using Tailwind CDN for simplicity in this static web app.
          For production with build process, consider installing via npm and using PostCSS. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -47,11 +41,6 @@
         }
     </script>
     <style>
-        /* Alpine.js cloak - prevents flash of unstyled content */
-        [x-cloak] {
-            display: none !important;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -375,33 +364,61 @@
             animation-delay: 0.3s;
         }
 
+        .card-delay-7 {
+            animation-delay: 0.35s;
+        }
 
+        .card-delay-8 {
+            animation-delay: 0.4s;
+        }
 
+        .card-delay-9 {
+            animation-delay: 0.45s;
+        }
 
+        .card-delay-10 {
+            animation-delay: 0.5s;
+        }
 
+        .card-delay-11 {
+            animation-delay: 0.55s;
+        }
 
+        .card-delay-12 {
+            animation-delay: 0.6s;
+        }
 
+        .card-delay-13 {
+            animation-delay: 0.65s;
+        }
 
+        .card-delay-14 {
+            animation-delay: 0.7s;
+        }
 
+        .card-delay-15 {
+            animation-delay: 0.75s;
+        }
 
+        .card-delay-16 {
+            animation-delay: 0.8s;
+        }
 
+        .card-delay-17 {
+            animation-delay: 0.85s;
+        }
 
+        .card-delay-18 {
+            animation-delay: 0.9s;
+        }
 
+        .card-delay-19 {
+            animation-delay: 0.95s;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        .card-delay-20 {
+            animation-delay: 1s;
+        }
 
         /* Hero Carousel Styles */
         .hero-carousel {
@@ -755,14 +772,14 @@
                 <div id="results-container" class="horizontal-scroll">
                     <template x-for="(item, index) in results" :key="'result-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
-                                        decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -801,13 +818,14 @@
                     <template x-for="(item, index) in getFilteredWatchlist()"
                         :key="contentType + '-watchlist-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -844,13 +862,14 @@
                     <template x-for="(item, index) in getFilteredContinueWatching()"
                         :key="contentType + '-continue-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-left"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -900,14 +919,14 @@
                 <div id="trending-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredTrending()" :key="'trend-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-right"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
-                                        decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -959,13 +978,14 @@
                 <div id="popular-movies-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredPopularMovies()" :key="'popular-movie-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title">
@@ -1017,13 +1037,14 @@
                 <div id="popular-tv-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredPopularTVShows()" :key="'popular-tv-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-left"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path" :alt="item.name"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.name">
@@ -1075,14 +1096,14 @@
                 <div id="hindi-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredHindi()" :key="'hindi-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-right"
-                            :class="'card-delay-' + ((index % 6) + 1)">
+                            :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
                                     <img :src="'https://image.tmdb.org/t/p/w500' + item.poster_path"
-                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
-                                        decoding="async"
-                                        @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" @error="event => {
+                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
+                                        }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
                                         <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
@@ -1118,7 +1139,7 @@
     </div>
 
     <!-- Search Overlay -->
-    <div x-show="showSearch" x-cloak class="search-overlay fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
+    <div x-show="showSearch" class="search-overlay fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
         @click.self="toggleSearch()" x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
@@ -1146,13 +1167,12 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="(item, index) in results" :key="item.id">
                     <div @click="watchContent(item)" class="cursor-pointer group card-animate"
-                        :class="'card-delay-' + ((index % 6) + 1)">
+                        :class="'card-delay-' + ((index % 20) + 1)">
                         <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
                                 :alt="item.title || item.name"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                loading="lazy" decoding="async"
-                                @error="event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'">
+                                @error="event => { event.target.src = 'https://via.placeholder.com/300x450?text=No+Image'; }">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                             <h3 class="absolute bottom-2 left-2 right-2 text-sm font-semibold text-white"
                                 x-text="item.title || item.name"></h3>
@@ -2134,9 +2154,6 @@
             }
         });
     </script>
-
-    <!-- Load Alpine.js at end for better performance -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
 </body>
 
 </html>
