@@ -724,7 +724,7 @@
                         </div>
                         <p class="hero-overview" x-text="item.overview || 'No description available.'"></p>
                         <div class="hero-buttons">
-                            <button @click="watchContent(item)" class="hero-btn hero-btn-play">
+                            <button @click="playHeroContent(item)" class="hero-btn hero-btn-play">
                                 <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path
                                         d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
@@ -795,19 +795,6 @@
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
                                     </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer"
-                                            :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                                :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -840,17 +827,6 @@
                                         <p class="text-gray-400 text-xs md:text-sm mt-1"
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
-                                    </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-red-600 hover:bg-red-700 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -911,13 +887,13 @@
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Trending</h2>
                 <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
                     <button @click="trendingType = 'movie'"
-                        :class="trendingType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
+                        :class="trendingType === 'movie' ? 'bg-white/20 text-white border-white/40' : 'text-gray-400 hover:text-white hover:bg-white/10'"
+                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all backdrop-blur-md border border-transparent">
                         Movies
                     </button>
                     <button @click="trendingType = 'tv'"
-                        :class="trendingType === 'tv' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
+                        :class="trendingType === 'tv' ? 'bg-white/20 text-white border-white/40' : 'text-gray-400 hover:text-white hover:bg-white/10'"
+                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all backdrop-blur-md border border-transparent">
                         TV Shows
                     </button>
                 </div>
@@ -941,19 +917,6 @@
                                         <p class="text-gray-400 text-xs md:text-sm mt-1"
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
-                                    </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer"
-                                            :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                                :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1001,19 +964,6 @@
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
                                     </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer"
-                                            :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                                :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1060,19 +1010,6 @@
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
                                     </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer"
-                                            :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                                :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1118,19 +1055,6 @@
                                         <p class="text-gray-400 text-xs md:text-sm mt-1"
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
                                         </p>
-                                    </div>
-                                    <div class="absolute top-2 right-2 flex space-x-2 z-20">
-                                        <button @click.stop.prevent="toggleWatchlist(item)"
-                                            class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all z-20 relative cursor-pointer"
-                                            :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                                :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M12 4v16m8-8H4" />
-                                            </svg>
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -2079,6 +2003,24 @@
                             console.log('Failed to toggle mute:', e);
                         }
                     }
+                },
+
+                playHeroContent(item) {
+                    // Directly play content in fullscreen from hero section
+                    const contentId = item.id;
+                    const isShow = item.media_type === 'tv' || item.first_air_date;
+                    let url;
+
+                    if (isShow) {
+                        // For TV shows, play Season 1 Episode 1
+                        url = `https://vidfast.pro/tv/${contentId}/1/1?autoPlay=true`;
+                    } else {
+                        // For movies
+                        url = `https://vidfast.pro/movie/${contentId}?autoPlay=true`;
+                    }
+
+                    this.fullscreenPlayerUrl = url;
+                    this.showFullscreenPlayer = true;
                 },
 
                 playFullscreen() {

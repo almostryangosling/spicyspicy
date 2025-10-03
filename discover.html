@@ -443,13 +443,13 @@
         <div class="flex justify-center mb-6">
             <div class="flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
                 <button @click="switchContentType('movie')"
-                    :class="contentType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                    class="px-4 py-2 sm:px-6 sm:py-3 rounded-md text-sm font-medium transition-all">
+                    :class="contentType === 'movie' ? 'bg-white/20 text-white border-white/40' : 'text-gray-400 hover:text-white hover:bg-white/10'"
+                    class="px-4 py-2 sm:px-6 sm:py-3 rounded-md text-sm font-medium transition-all backdrop-blur-md border border-transparent">
                     Movies
                 </button>
                 <button @click="switchContentType('tv')"
-                    :class="contentType === 'tv' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                    class="px-4 py-2 sm:px-6 sm:py-3 rounded-md text-sm font-medium transition-all">
+                    :class="contentType === 'tv' ? 'bg-white/20 text-white border-white/40' : 'text-gray-400 hover:text-white hover:bg-white/10'"
+                    class="px-4 py-2 sm:px-6 sm:py-3 rounded-md text-sm font-medium transition-all backdrop-blur-md border border-transparent">
                     TV Shows
                 </button>
             </div>
@@ -496,21 +496,6 @@
                     <div class="relative aspect-[2/3]">
                         <img :src="item.poster_path ? `https://image.tmdb.org/t/p/w500${item.poster_path}` : 'https://via.placeholder.com/500x750/1A1A1A/666666?text=No+Image'"
                             :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy">
-
-                        <!-- Watchlist Button -->
-                        <div class="absolute top-2 right-2 z-20">
-                            <button @click.stop.prevent="toggleWatchlist(item)"
-                                class="bg-black bg-opacity-75 hover:bg-opacity-90 text-white p-1.5 sm:p-2 rounded-full transition-all cursor-pointer"
-                                :class="isInWatchlist(item.id) ? 'text-yellow-400' : 'text-white'">
-                                <svg xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4 sm:h-5 sm:w-5 pointer-events-none"
-                                    :fill="isInWatchlist(item.id) ? 'currentColor' : 'none'" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                        </div>
 
                         <div class="card-overlay absolute inset-0 flex flex-col justify-end p-3 sm:p-4">
                             <h3 class="text-white font-semibold text-sm sm:text-base leading-tight mb-1"
