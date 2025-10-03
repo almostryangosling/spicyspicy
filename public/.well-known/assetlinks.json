@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.spicy.streaming",
+            "sha256_cert_fingerprints": [
+                "3EDC188D446B06AF9D49E6ED75D72650ED89F1E5449D06C899595629001EAAA7"
+            ]
+        }
+    }
+]
