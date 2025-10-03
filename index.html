@@ -811,11 +811,12 @@
 
         <!-- Watchlist -->
         <div x-show="showWatchlist && getFilteredWatchlist().length > 0"
-            class="hidden sm:block max-w-7xl mx-auto mt-4 sm:mt-6 fade-in fade-in-delay-1">
+            class="max-w-7xl mx-auto mt-4 sm:mt-6 fade-in fade-in-delay-1">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">My Watchlist</h2>
             <div class="scroll-container">
                 <div id="watchlist-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredWatchlist()" :key="'watchlist-' + index">
+                    <template x-for="(item, index) in getFilteredWatchlist()"
+                        :key="contentType + '-watchlist-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
@@ -854,11 +855,12 @@
 
         <!-- Continue Watching -->
         <div id="continue-watching-section" x-show="showContinueWatching && getFilteredContinueWatching().length > 0"
-            class="hidden sm:block max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-2">
+            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-2">
             <h2 class="text-xl sm:text-2xl font-bold text-white mb-4 sm:mb-6">Continue Watching</h2>
             <div class="scroll-container">
                 <div id="continue-watching-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredContinueWatching()" :key="'continue-' + index">
+                    <template x-for="(item, index) in getFilteredContinueWatching()"
+                        :key="contentType + '-continue-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
