@@ -848,7 +848,7 @@
             <div class="scroll-container">
                 <div id="watchlist-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredWatchlist()"
-                        :key="contentType + '-watchlist-' + item.id + '-' + index">
+                        :key="'watchlist-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
@@ -881,7 +881,7 @@
             <div class="scroll-container">
                 <div id="continue-watching-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredContinueWatching()"
-                        :key="contentType + '-continue-' + item.id + '-' + index">
+                        :key="'continue-' + item.id + '-' + index">
                         <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
@@ -1943,21 +1943,15 @@
                 },
 
                 getFilteredWatchlist() {
-                    // On mobile (width < 640px), show all items regardless of contentType
-                    // On desktop, filter by contentType (movie/tv)
-                    if (window.innerWidth < 640) {
-                        return this.watchlist;
-                    }
-                    return this.watchlist.filter(item => item.media_type === this.contentType);
+                    // Show all items on both mobile and desktop
+                    // No need to filter by contentType - users want to see all their watchlist
+                    return this.watchlist;
                 },
 
                 getFilteredContinueWatching() {
-                    // On mobile (width < 640px), show all items regardless of contentType
-                    // On desktop, filter by contentType (movie/tv)
-                    if (window.innerWidth < 640) {
-                        return this.continueWatching;
-                    }
-                    return this.continueWatching.filter(item => item.media_type === this.contentType);
+                    // Show all items on both mobile and desktop
+                    // No need to filter by contentType - users want to see all continue watching
+                    return this.continueWatching;
                 },
 
                 scrollLeft(containerId) {
@@ -2339,6 +2333,10 @@
                         overview: this.selectedContent.overview
                     };
 
+                    // Add to continue watching on current page
+                    this.addToContinueWatching(continueWatchingData);
+
+                    // Also save to localStorage for cross-page updates
                     localStorage.setItem('streamSearch_continueWatching_update', JSON.stringify(continueWatchingData));
                 },
 
