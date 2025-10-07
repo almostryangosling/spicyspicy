@@ -414,9 +414,9 @@
         .hero-carousel {
             position: relative;
             width: 100%;
-            height: 35vh;
-            min-height: 250px;
-            max-height: 350px;
+            height: 55vh;
+            min-height: 350px;
+            max-height: 450px;
             overflow: hidden;
             touch-action: pan-y;
         }
@@ -720,7 +720,7 @@
                             <iframe
                                 :src="heroTrailers[item.id] + '&autoplay=1&mute=1&controls=0&loop=1&playlist=' + heroTrailers[item.id].split('/embed/')[1].split('?')[0]"
                                 allow="autoplay; encrypted-media"
-                                class="absolute top-1/2 left-1/2 w-[150vw] h-[84.375vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+                                class="absolute top-[35%] left-1/2 w-[190vw] h-[106.875vw] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
                                 style="aspect-ratio: 16/9;">
                             </iframe>
                         </div>
