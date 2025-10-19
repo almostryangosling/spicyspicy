@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded wrapper SVG that clips the existing appicon.png to rounded corners.
+     This file uses the raster `appicon.png` and clips it to a rounded rect so both
+     favicon and PWA icon can show rounded corners without modifying the original PNG. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="Spicy">
+  <defs>
+    <clipPath id="clip-rounded">
+      <rect width="512" height="512" rx="80" ry="80" />
+    </clipPath>
+  </defs>
+
+  <!-- Optional background (fallback when image doesn't load) -->
+  <rect width="512" height="512" rx="80" ry="80" fill="#000000" />
+
+  <!-- Embed the existing PNG and clip it to the rounded rectangle -->
+  <image href="appicon.png" x="0" y="0" width="512" height="512" preserveAspectRatio="xMidYMid slice" clip-path="url(#clip-rounded)" />
+</svg>
