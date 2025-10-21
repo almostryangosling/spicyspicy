@@ -17,7 +17,7 @@
     <!-- Resource Hints for Performance -->
     <link rel="preconnect" href="https://api.themoviedb.org" crossorigin>
     <link rel="preconnect" href="https://image.tmdb.org" crossorigin>
-    <link rel="dns-prefetch" href="https://vidfast.pro">
+    <link rel="dns-prefetch" href="https://rivestream.org">
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
@@ -27,6 +27,7 @@
     <!-- Note: Using Tailwind CDN for simplicity in this static web app.
          For production with build process, consider installing via npm and using PostCSS. -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js" defer></script>
+    <script src="/sources.js"></script>
     <style>
         /* Prevent flash of unstyled content */
         body {
@@ -1482,7 +1483,7 @@
                 hindiTVShows: [],
                 hindiType: 'movie', // 'movie' or 'tv' for Hindi section
                 contentType: 'movie', // 'movie' or 'tv' for mobile content filtering
-                defaultSource: 'vidfast', // Default source
+                defaultSource: 'rive', // Default source (RiveStream)
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
                 showWatchlist: false,
@@ -1810,8 +1811,8 @@
                 },
 
                 loadDefaultSource() {
-                    // Always use vidfast as the source
-                    this.defaultSource = 'vidfast';
+                    // Use RiveStream as the default video source
+                    this.defaultSource = 'rive';
                 },
 
                 async loadTrending() {
@@ -2188,13 +2189,13 @@
                 },
 
                 updatePreloadUrl() {
-                    // Generate URL for preloading
+                    // Generate URL for preloading using RiveStream embed endpoints
                     if (this.selectedIsShow) {
                         // For TV shows, use current season and episode
-                        this.preloadPlayerUrl = `https://vidfast.pro/tv/${this.selectedContentId}/${this.selectedSeason}/${this.selectedEpisode}?autoPlay=false`;
+                        this.preloadPlayerUrl = `https://rivestream.org/embed?type=tv&id=${this.selectedContentId}&season=${this.selectedSeason}&episode=${this.selectedEpisode}&autoPlay=false`;
                     } else {
                         // For movies
-                        this.preloadPlayerUrl = `https://vidfast.pro/movie/${this.selectedContentId}?autoPlay=false`;
+                        this.preloadPlayerUrl = `https://rivestream.org/embed?type=movie&id=${this.selectedContentId}&autoPlay=false`;
                     }
                 },
 
@@ -2310,11 +2311,11 @@
                     let url;
 
                     if (isShow) {
-                        // For TV shows, play Season 1 Episode 1
-                        url = `https://vidfast.pro/tv/${contentId}/1/1?autoPlay=true`;
+                        // For TV shows, play Season 1 Episode 1 using RiveStream embed
+                        url = `https://rivestream.org/embed?type=tv&id=${contentId}&season=1&episode=1&autoPlay=true`;
                     } else {
                         // For movies
-                        url = `https://vidfast.pro/movie/${contentId}?autoPlay=true`;
+                        url = `https://rivestream.org/embed?type=movie&id=${contentId}&autoPlay=true`;
                     }
 
                     // Stop hero carousel and pause trailer
@@ -2350,9 +2351,9 @@
                     let url;
 
                     if (this.selectedIsShow) {
-                        url = `https://vidfast.pro/tv/${this.selectedContentId}/${this.selectedSeason}/${this.selectedEpisode}?autoPlay=true`;
+                        url = `https://rivestream.org/embed?type=tv&id=${this.selectedContentId}&season=${this.selectedSeason}&episode=${this.selectedEpisode}&autoPlay=true`;
                     } else {
-                        url = `https://vidfast.pro/movie/${this.selectedContentId}?autoPlay=true`;
+                        url = `https://rivestream.org/embed?type=movie&id=${this.selectedContentId}&autoPlay=true`;
                     }
 
                     // Stop the trailer before opening fullscreen player
