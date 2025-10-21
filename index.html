@@ -748,6 +748,28 @@
         window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/insights/script.js"></script>
+    <style>
+        /* Hide native vertical scrollbar when running as an installed PWA (standalone/fullscreen).
+         Keep content scrollable (mouse wheel/keyboard/touch) but remove the visible scrollbar. */
+        @media (display-mode: standalone),
+        (display-mode: fullscreen) {
+
+            html,
+            body {
+                scrollbar-width: none;
+                /* Firefox */
+                -ms-overflow-style: none;
+                /* IE 10+ */
+            }
+
+            html::-webkit-scrollbar,
+            body::-webkit-scrollbar {
+                width: 0px;
+                height: 0px;
+                background: transparent;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-amoled min-h-screen text-white" x-data="searchApp()">
