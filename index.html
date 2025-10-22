@@ -45,32 +45,49 @@
 
             /* Keep the content width reasonable on very wide screens */
             .container {
-                max-width: 1400px;
+                max-width: 1200px;
                 margin-left: auto;
                 margin-right: auto;
-                padding-left: 1.5rem;
-                padding-right: 1.5rem;
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
             /* Reduce the hero padding and cap hero title/overview so it doesn't grow too large on TVs */
             .hero-content {
-                padding: 1.5rem 1.5rem 4rem;
+                padding: 1rem 1rem 2rem;
             }
 
             .hero-title {
-                font-size: clamp(1.6rem, calc(1.1rem + 1vw), 3rem);
+                font-size: clamp(1.2rem, calc(1rem + 0.5vw), 2rem);
             }
 
             .hero-overview {
-                font-size: clamp(0.95rem, calc(0.9rem + 0.2vw), 1.1rem);
+                font-size: clamp(0.8rem, calc(0.75rem + 0.1vw), 0.9rem);
             }
 
             /* Cap card widths so they don't become overly large on ultra-wide displays */
             .card-fixed {
-                max-width: 260px;
-                flex: 0 0 200px;
+                max-width: 200px;
+                flex: 0 0 160px;
                 /* slightly smaller basis on very large screens */
-                min-width: 140px;
+                min-width: 120px;
+            }
+
+            /* Reduce search input size for TV */
+            .search-input {
+                font-size: 1.5rem;
+                padding: 1rem 3rem 1rem 1rem;
+            }
+
+            /* Reduce modal size for TV */
+            .modal-content {
+                max-width: 60rem;
+            }
+
+            /* Reduce hero carousel height for TV */
+            .hero-carousel {
+                min-height: 300px;
+                max-height: 350px;
             }
 
             /* Reduce focus border thickness for TV to keep accents visually balanced */
@@ -827,19 +844,13 @@
         <div x-show="showSearchBar" class="hidden sm:flex justify-center mb-8 sm:mb-12 fade-in">
             <div class="search-container max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl">
                 <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
-                    @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..." class="search-input"
-                    x-ref="searchInput">
+                    @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..."
+                    class="search-input tv-navigable-item" x-ref="searchInput">
                 <svg xmlns="http://www.w3.org/2000/svg" class="search-icon h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
-                <a href="#" @click.prevent="navigateWithTransition('discover.html')" class="discover-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2M7 4h10" />
-                    </svg>
-                </a>
             </div>
         </div>
 
@@ -1148,24 +1159,7 @@
         </div>
     </div>
 
-    <!-- Download Section -->
-    <div class="container mx-auto px-4 py-8">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="https://pixeldrain.com/u/CQzTdyv5" target="_blank"
-                    class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white font-semibold rounded-lg transition-all duration-200 hover:scale-105 shadow-lg">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    Download Windows App for ad free experience
-                </a>
-                <p class="text-gray-300 text-sm sm:text-base">
-                    Or Use uBlock Origin extention
-                </p>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Search Overlay -->
     <div x-show="showSearch" class="search-overlay fixed inset-0 bg-amoled bg-opacity-95 z-50 p-4 flex flex-col"
@@ -1176,7 +1170,7 @@
         <div class="relative mb-6 mt-4">
             <input type="text" x-model="searchQuery" @keyup.debounce.500ms="searchContent()"
                 @keyup.enter="searchContent()" placeholder="Search for movies, TV shows..."
-                class="w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors"
+                class="tv-navigable-item w-full py-3 pl-4 pr-10 border-b-2 border-gray-600 bg-transparent text-white text-lg focus:outline-none focus:border-blue-500 transition-colors"
                 x-ref="searchOverlayInput">
             <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1195,7 +1189,7 @@
         <div x-show="!isLoading && results.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4" @click.stop>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="(item, index) in results" :key="item.id">
-                    <div @click="watchContent(item)" class="cursor-pointer group card-animate"
+                    <div @click="watchContent(item)" class="tv-navigable-item cursor-pointer group card-animate"
                         :class="'card-delay-' + ((index % 20) + 1)">
                         <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
@@ -1224,7 +1218,7 @@
     </div>
 
     <!-- Content Modal Overlay -->
-    <div x-show="showModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto" @click.self="closeModal()"
+    <div x-show="showModal" class="fixed inset-0 z-50 overflow-y-auto" @click.self="closeModal()"
         @keydown.escape.window="closeModal()" x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
         x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
@@ -1235,14 +1229,14 @@
 
         <!-- Modal Content -->
         <div class="relative min-h-screen flex items-center justify-center p-4" @click.self="closeModal()">
-            <div class="relative w-full max-w-md sm:max-w-5xl bg-amoled-card rounded-xl shadow-2xl overflow-hidden"
+            <div class="relative w-full max-w-md sm:max-w-4xl modal-content bg-amoled-card rounded-xl shadow-2xl overflow-hidden"
                 x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"
                 x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-200"
                 x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95">
 
                 <!-- Close Button -->
                 <button @click="closeModal()"
-                    class="absolute top-4 right-4 z-30 p-2 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110">
+                    class="tv-navigable-item absolute top-4 right-4 z-30 p-2 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
                         </path>
@@ -1352,19 +1346,19 @@
                                     <!-- Action Buttons -->
                                     <div class="flex flex-wrap gap-2">
                                         <button @click="playFullscreen()"
-                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
+                                            class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
                                             <span>Play</span>
                                         </button>
 
                                         <button @click.stop="toggleWatchlist(selectedContent)"
-                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 backdrop-blur-md border rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
+                                            class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 backdrop-blur-md border rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
                                             :class="isInWatchlist(selectedContent?.id) ? 'bg-white/20 hover:bg-white/30 border-white/40 text-white' : 'bg-white/10 hover:bg-white/20 border-white/20 text-white'">
                                             <span
                                                 x-text="isInWatchlist(selectedContent?.id) ? 'In List' : 'My List'"></span>
                                         </button>
 
                                         <button @click="toggleModalTrailerMute()"
-                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
+                                            class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm"
                                             :title="isModalTrailerMuted ? 'Unmute Trailer' : 'Mute Trailer'">
                                             <svg x-show="isModalTrailerMuted" class="h-4 w-4 sm:h-5 sm:w-5 text-white"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1381,8 +1375,8 @@
                                         </button>
 
                                         <button x-show="selectedIsShow"
-                                            @click="showEpisodeSelector = !showEpisodeSelector"
-                                            class="flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
+                                            @click="showEpisodeSelector = !showEpisodeSelector; updateModalNavigation()"
+                                            class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
                                             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor"
                                                 viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1416,7 +1410,7 @@
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         <template x-for="episode in selectedEpisodes" :key="episode.episode_number">
                             <div @click="selectedEpisode = episode.episode_number; updatePreloadUrl(); playFullscreen()"
-                                class="cursor-pointer bg-amoled-light rounded-lg p-3 hover:bg-amoled-card transition-colors border border-amoled-border hover:border-blue-500"
+                                class="tv-navigable-item cursor-pointer bg-amoled-light rounded-lg p-3 hover:bg-amoled-card transition-colors border border-amoled-border hover:border-blue-500"
                                 :class="selectedEpisode === episode.episode_number ? 'border-blue-500 bg-amoled-card' : ''">
                                 <div class="aspect-video mb-2 bg-gray-600 rounded overflow-hidden">
                                     <img :src="episode.still_path ? 'https://image.tmdb.org/t/p/w300' + episode.still_path : 'https://via.placeholder.com/300x169?text=Ep+' + episode.episode_number"
@@ -1463,8 +1457,8 @@
     <!-- Bottom Navigation (Mobile Only) -->
     <div
         class="fixed bottom-0 left-0 right-0 bg-amoled border-t border-amoled-border p-2 flex justify-around sm:hidden z-50">
-        <a href="#"
-            class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
+        <a href="#" @click.prevent="navigateToHome()"
+            class="tv-navigable-item flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -1472,23 +1466,14 @@
             </svg>
         </a>
         <a href="#" @click.prevent="toggleSearch()"
-            class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
+            class="tv-navigable-item flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
         </a>
-        <a href="#" @click.prevent="navigateWithTransition('discover.html')"
-            class="flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4H5a2 2 0 00-2 2v10a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2h-2M7 4h10" />
-            </svg>
-        </a>
     </div>
-
     <script>
         function searchApp() {
             return {
@@ -1511,7 +1496,7 @@
                 hindiTVShows: [],
                 hindiType: 'movie', // 'movie' or 'tv' for Hindi section
                 contentType: 'movie', // 'movie' or 'tv' for mobile content filtering
-                defaultSource: 'rive', // Default source (RiveStream)
+                defaultSource: 'pstream', // Default source (P-Stream)
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
                 showWatchlist: false,
@@ -1542,8 +1527,13 @@
                     'popular-tv-shows',
                     'hindi',
                     'top-rated-movies',
-                    'top-rated-tv-shows'
+                    'top-rated-tv-shows',
+                    'bottom-navigation'
                 ],
+                // Modal navigation properties
+                isModalNavigation: false,
+                modalCurrentItem: 0,
+                modalItems: [], // Will be populated when modal opens
                 // Modal properties
                 showModal: false,
                 selectedContent: null,
@@ -1614,10 +1604,10 @@
                     // Add double tap detection for mobile content switching
                     this.initSwipeDetection();
 
-                    // Initialize focus (but don't auto-focus search on mobile to avoid keyboard popup)
-                    // setTimeout(() => {
-                    //     this.focusCurrentItem();
-                    // }, 1200); // Wait for content to load
+                    // Ensure navigation starts on a valid section
+                    setTimeout(() => {
+                        this.ensureValidNavigation();
+                    }, 1500); // Wait for content to load
 
                     // Remove transition class after page loads
                     document.body.classList.remove('page-transition-out');
@@ -1840,8 +1830,8 @@
                 },
 
                 loadDefaultSource() {
-                    // Use RiveStream as the default video source
-                    this.defaultSource = 'rive';
+                    // Use P-Stream as the default video source
+                    this.defaultSource = 'pstream';
                 },
 
                 // Helper method to get URL from source template
@@ -2096,6 +2086,11 @@
 
                         console.log('Filtered results:', this.results);
 
+                        // Update navigation if search results appeared
+                        setTimeout(() => {
+                            this.ensureValidNavigation();
+                        }, 100);
+
                     } catch (error) {
                         console.error('Search error:', error);
                         this.results = [];
@@ -2118,6 +2113,15 @@
                     this.selectedIsShow = this.selectedContentType === 'tv';
                     this.showModal = true;
                     this.showEpisodeSelector = false;
+
+                    // Reset modal navigation
+                    this.modalCurrentItem = 0;
+                    this.modalItems = [];
+
+                    // Update modal navigation after a short delay to ensure modal is rendered
+                    setTimeout(() => {
+                        this.updateModalNavigation();
+                    }, 100);
 
                     // For TV shows from continue watching, restore the last watched season and episode
                     if (this.selectedIsShow && item.last_season && item.last_episode) {
@@ -2223,6 +2227,9 @@
                         if (this.showModal) {
                             this.updatePreloadUrl();
                         }
+
+                        // Update modal navigation after episodes are loaded
+                        this.updateModalNavigation();
                     } catch (error) {
                         console.error('Error loading episodes:', error);
                         this.selectedEpisodes = [];
@@ -2255,6 +2262,10 @@
                     this.showEpisodeSelector = false;
                     this.isModalTrailerMuted = true;
                     this.isTrailerReady = false; // Reset trailer ready state
+
+                    // Reset modal navigation
+                    this.modalCurrentItem = 0;
+                    this.modalItems = [];
                 },
 
                 startPreloading() {
@@ -2604,6 +2615,19 @@
 
                 initKeyboardNavigation() {
                     document.addEventListener('keydown', (e) => {
+                        // Handle modal navigation first if modal is open
+                        if (this.showModal) {
+                            this.handleModalNavigation(e);
+                            return;
+                        }
+
+                        // Handle search overlay navigation
+                        if (this.showSearch) {
+                            this.handleSearchOverlayNavigation(e);
+                            return;
+                        }
+
+                        // Handle main page navigation
                         switch (e.key) {
                             case 'ArrowUp':
                                 e.preventDefault();
@@ -2625,8 +2649,72 @@
                                 e.preventDefault();
                                 this.selectCurrentItem();
                                 break;
+                            case 'Escape':
+                                e.preventDefault();
+                                // Nothing to do on main page
+                                break;
                         }
                     });
+                },
+
+                handleModalNavigation(e) {
+                    switch (e.key) {
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            this.navigateModalUp();
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            this.navigateModalDown();
+                            break;
+                        case 'ArrowLeft':
+                            e.preventDefault();
+                            this.navigateModalLeft();
+                            break;
+                        case 'ArrowRight':
+                            e.preventDefault();
+                            this.navigateModalRight();
+                            break;
+                        case 'Enter':
+                            e.preventDefault();
+                            this.selectModalItem();
+                            break;
+                        case 'Escape':
+                            e.preventDefault();
+                            this.closeModal();
+                            break;
+                    }
+                },
+
+                handleSearchOverlayNavigation(e) {
+                    switch (e.key) {
+                        case 'ArrowUp':
+                            e.preventDefault();
+                            // Navigate up in search results
+                            if (this.currentItem > 0) {
+                                this.currentItem--;
+                                this.focusSearchResult();
+                            }
+                            break;
+                        case 'ArrowDown':
+                            e.preventDefault();
+                            // Navigate down in search results
+                            if (this.currentItem < this.results.length - 1) {
+                                this.currentItem++;
+                                this.focusSearchResult();
+                            }
+                            break;
+                        case 'Enter':
+                            e.preventDefault();
+                            if (this.results[this.currentItem]) {
+                                this.watchContent(this.results[this.currentItem]);
+                            }
+                            break;
+                        case 'Escape':
+                            e.preventDefault();
+                            this.toggleSearch();
+                            break;
+                    }
                 },
 
                 initSwipeDetection() {
@@ -2689,20 +2777,56 @@
                 },
 
                 navigateUp() {
-                    if (this.currentSection > 0) {
-                        this.currentSection--;
-                        this.currentItem = 0;
+                    let newSection = this.currentSection - 1;
+                    while (newSection >= 0 && !this.isSectionVisible(this.sections[newSection])) {
+                        newSection--;
+                    }
+                    if (newSection >= 0) {
+                        this.currentSection = newSection;
+                        this.currentItem = 0; // Reset to first item
+                        console.log('Navigated up to section:', this.sections[this.currentSection], 'item:', this.currentItem);
                         this.focusCurrentItem();
                         this.scrollToCurrentSection();
+                    } else {
+                        // If no section above, wrap to last visible section
+                        let lastVisible = this.sections.length - 1;
+                        while (lastVisible > this.currentSection && !this.isSectionVisible(this.sections[lastVisible])) {
+                            lastVisible--;
+                        }
+                        if (lastVisible !== this.currentSection && this.isSectionVisible(this.sections[lastVisible])) {
+                            this.currentSection = lastVisible;
+                            this.currentItem = 0; // Reset to first item
+                            console.log('Wrapped up to section:', this.sections[this.currentSection], 'item:', this.currentItem);
+                            this.focusCurrentItem();
+                            this.scrollToCurrentSection();
+                        }
                     }
                 },
 
                 navigateDown() {
-                    if (this.currentSection < this.sections.length - 1) {
-                        this.currentSection++;
-                        this.currentItem = 0;
+                    let newSection = this.currentSection + 1;
+                    while (newSection < this.sections.length && !this.isSectionVisible(this.sections[newSection])) {
+                        newSection++;
+                    }
+                    if (newSection < this.sections.length) {
+                        this.currentSection = newSection;
+                        this.currentItem = 0; // Reset to first item
+                        console.log('Navigated down to section:', this.sections[this.currentSection], 'item:', this.currentItem);
                         this.focusCurrentItem();
                         this.scrollToCurrentSection();
+                    } else {
+                        // If no section below, wrap to first visible section
+                        let firstVisible = 0;
+                        while (firstVisible < this.currentSection && !this.isSectionVisible(this.sections[firstVisible])) {
+                            firstVisible++;
+                        }
+                        if (firstVisible !== this.currentSection && this.isSectionVisible(this.sections[firstVisible])) {
+                            this.currentSection = firstVisible;
+                            this.currentItem = 0; // Reset to first item
+                            console.log('Wrapped down to section:', this.sections[this.currentSection], 'item:', this.currentItem);
+                            this.focusCurrentItem();
+                            this.scrollToCurrentSection();
+                        }
                     }
                 },
 
@@ -2746,6 +2870,9 @@
                             return this.getFilteredTopRatedTVShows();
                         case 'hindi':
                             return this.getFilteredHindi();
+                        case 'bottom-navigation':
+                            // Bottom navigation has 2 items: home and search
+                            return ['home-button', 'search-button'];
                         default:
                             return null;
                     }
@@ -2773,12 +2900,22 @@
                                 }
                             } else {
                                 // Focus the search input instead (but not on mobile to avoid keyboard popup)
-                                if (!this.isMobileDevice()) {
-                                    const searchInput = document.querySelector('.search-input');
-                                    if (searchInput) {
+                                const searchInput = document.querySelector('.search-input');
+                                if (searchInput) {
+                                    searchInput.classList.add('tv-focused-item');
+                                    if (!this.isMobileDevice()) {
                                         searchInput.focus();
                                     }
                                 }
+                            }
+                            return;
+                        }
+
+                        if (section === 'bottom-navigation') {
+                            // Focus bottom navigation buttons
+                            const bottomNavButtons = document.querySelectorAll('.fixed.bottom-0 .tv-navigable-item');
+                            if (bottomNavButtons[this.currentItem]) {
+                                bottomNavButtons[this.currentItem].classList.add('tv-focused-item');
                             }
                             return;
                         }
@@ -2827,9 +2964,11 @@
 
                 scrollToCurrentSection() {
                     const section = this.sections[this.currentSection];
+                    console.log('Scrolling to section:', section);
 
                     // Find the section element based on the section name
                     let sectionElement = null;
+                    let scrollTarget = null;
 
                     switch (section) {
                         case 'search':
@@ -2841,48 +2980,72 @@
                             break;
                         case 'watchlist':
                             sectionElement = document.querySelector('[x-show*="showWatchlist"]');
+                            scrollTarget = document.getElementById('watchlist-container');
                             break;
                         case 'continue-watching':
                             sectionElement = document.querySelector('[x-show*="showContinueWatching"]');
+                            scrollTarget = document.getElementById('continue-watching-container');
                             break;
                         case 'trending':
                             sectionElement = document.querySelector('[x-show*="showTrending"]');
+                            scrollTarget = document.getElementById('trending-container');
                             break;
                         case 'popular-movies':
                             sectionElement = document.querySelector('[x-show*="showPopularMovies"]');
+                            scrollTarget = document.getElementById('popular-movies-container');
                             break;
                         case 'top-rated-movies':
                             sectionElement = document.querySelector('[x-show*="showTopRatedMovies"]');
+                            scrollTarget = document.getElementById('top-rated-movies-container');
                             break;
                         case 'popular-tv-shows':
                             sectionElement = document.querySelector('[x-show*="showPopularTVShows"]');
+                            scrollTarget = document.getElementById('popular-tv-container');
                             break;
                         case 'top-rated-tv-shows':
                             sectionElement = document.querySelector('[x-show*="showTopRatedTVShows"]');
+                            scrollTarget = document.getElementById('top-rated-tv-container');
                             break;
                         case 'hindi':
                             sectionElement = document.querySelector('[x-show*="showHindi"]');
+                            scrollTarget = document.getElementById('hindi-container');
                             break;
+                        case 'bottom-navigation':
+                            // Scroll to bottom to show bottom navigation
+                            console.log('Scrolling to bottom navigation');
+                            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                            return;
                     }
 
-                    if (sectionElement) {
-                        const elementRect = sectionElement.getBoundingClientRect();
+                    // Use the scroll target if available, otherwise use the section element
+                    const targetElement = scrollTarget || sectionElement;
+                    console.log('Target element found:', targetElement);
+
+                    if (targetElement) {
+                        // Use scrollIntoView for more reliable scrolling
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start',
+                            inline: 'nearest'
+                        });
+
+                        // Also ensure the page scrolls if needed
+                        const elementRect = targetElement.getBoundingClientRect();
                         const viewportHeight = window.innerHeight;
 
-                        // Check if the section is not fully visible
-                        if (elementRect.top < 120) {
-                            // Section is too high, scroll up to show it
-                            window.scrollBy({
-                                top: elementRect.top - 150,
-                                behavior: 'smooth'
-                            });
-                        } else if (elementRect.bottom > viewportHeight - 120) {
-                            // Section is too low, scroll down to show it
-                            window.scrollBy({
-                                top: elementRect.bottom - viewportHeight + 150,
+                        console.log('Element rect:', elementRect, 'Viewport height:', viewportHeight);
+
+                        // If element is not visible enough, scroll the page
+                        if (elementRect.top < 100 || elementRect.bottom > viewportHeight - 100) {
+                            const scrollY = window.scrollY + elementRect.top - 150;
+                            console.log('Additional page scroll needed to:', scrollY);
+                            window.scrollTo({
+                                top: Math.max(0, scrollY),
                                 behavior: 'smooth'
                             });
                         }
+                    } else {
+                        console.log('No target element found for section:', section);
                     }
                 },
 
@@ -2907,6 +3070,17 @@
                         return;
                     }
 
+                    if (section === 'bottom-navigation') {
+                        if (this.currentItem === 0) {
+                            // Home button - scroll to top and reset navigation
+                            this.navigateToHome();
+                        } else if (this.currentItem === 1) {
+                            // Search button - open search overlay
+                            this.toggleSearch();
+                        }
+                        return;
+                    }
+
                     const currentSectionItems = this.getCurrentSectionItems();
                     if (currentSectionItems && currentSectionItems[this.currentItem]) {
                         this.watchContent(currentSectionItems[this.currentItem]);
@@ -2924,6 +3098,8 @@
                 toggleSearch() {
                     this.showSearch = !this.showSearch;
                     if (this.showSearch) {
+                        // Reset navigation for search overlay
+                        this.currentItem = 0;
                         // Focus the search input when opening with a slight delay for transition
                         setTimeout(() => {
                             const searchInput = this.$refs.searchOverlayInput;
@@ -2938,7 +3114,259 @@
                         this.searchQuery = '';
                         this.results = [];
                     }
-                }
+                },
+
+                focusSearchResult() {
+                    // Clear previous focus
+                    document.querySelectorAll('.tv-focused-item').forEach(el => {
+                        el.classList.remove('tv-focused-item');
+                    });
+
+                    // Focus current search result
+                    const searchResults = document.querySelectorAll('.search-overlay .cursor-pointer');
+                    if (searchResults[this.currentItem]) {
+                        searchResults[this.currentItem].classList.add('tv-focused-item');
+                        searchResults[this.currentItem].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                },
+
+                // Modal navigation methods
+                navigateModalUp() {
+                    if (this.modalCurrentItem > 0) {
+                        this.modalCurrentItem--;
+                        this.focusModalItem();
+                    }
+                },
+
+                navigateModalDown() {
+                    if (this.modalCurrentItem < this.modalItems.length - 1) {
+                        this.modalCurrentItem++;
+                        this.focusModalItem();
+                    }
+                },
+
+                navigateModalLeft() {
+                    // For modal, left/right might not be needed, but could be used for different layouts
+                    // For now, just keep it simple
+                },
+
+                navigateModalRight() {
+                    // For modal, left/right might not be needed, but could be used for different layouts
+                    // For now, just keep it simple
+                },
+
+                focusModalItem() {
+                    // Clear previous focus
+                    document.querySelectorAll('.tv-focused-item').forEach(el => {
+                        el.classList.remove('tv-focused-item');
+                    });
+
+                    // Focus current modal item
+                    if (this.modalItems[this.modalCurrentItem]) {
+                        const item = this.modalItems[this.modalCurrentItem];
+                        item.classList.add('tv-focused-item');
+                        item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                },
+
+                selectModalItem() {
+                    if (this.modalItems[this.modalCurrentItem]) {
+                        const item = this.modalItems[this.modalCurrentItem];
+                        console.log('Selecting modal item:', this.modalCurrentItem, item);
+
+                        // Check if this is the close button
+                        if (item.classList.contains('absolute')) {
+                            console.log('Close button selected, closing modal');
+                            this.closeModal();
+                            return;
+                        }
+
+                        // Check if this is a button and trigger the appropriate action
+                        if (item.tagName === 'BUTTON') {
+                            const clickHandler = item.getAttribute('@click') || item.getAttribute('onclick');
+                            console.log('Button click handler:', clickHandler);
+
+                            if (clickHandler) {
+                                // For Alpine.js click handlers, we need to evaluate them
+                                if (clickHandler.includes('playFullscreen()')) {
+                                    console.log('Calling playFullscreen()');
+                                    this.playFullscreen();
+                                } else if (clickHandler.includes('toggleWatchlist(')) {
+                                    console.log('Calling toggleWatchlist()');
+                                    this.toggleWatchlist(this.selectedContent);
+                                } else if (clickHandler.includes('toggleModalTrailerMute()')) {
+                                    console.log('Calling toggleModalTrailerMute()');
+                                    this.toggleModalTrailerMute();
+                                } else if (clickHandler.includes('showEpisodeSelector')) {
+                                    console.log('Toggling episode selector');
+                                    this.showEpisodeSelector = !this.showEpisodeSelector;
+                                    this.updateModalNavigation();
+                                } else {
+                                    // Fallback to regular click
+                                    console.log('Using fallback click');
+                                    item.click();
+                                }
+                            } else {
+                                console.log('No click handler found, using click()');
+                                item.click();
+                            }
+                        } else {
+                            // For non-button elements (like episode items), trigger click
+                            console.log('Non-button element, using click()');
+                            item.click();
+                        }
+                    } else {
+                        console.log('No modal item found at index:', this.modalCurrentItem);
+                    }
+                },
+
+                navigateToHome() {
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    // Reset navigation to first section
+                    this.currentSection = 0;
+                    this.currentItem = 0;
+                    this.focusCurrentItem();
+                },
+
+                updateModalNavigation() {
+                    // Wait for modal content to be fully loaded
+                    setTimeout(() => {
+                        // Collect all navigable items in the modal - always get fresh references
+                        this.modalItems = [];
+
+                        // Get modal close button first
+                        const closeButton = document.querySelector('.modal-content .tv-navigable-item.absolute');
+                        if (closeButton) {
+                            this.modalItems.push(closeButton);
+                        }
+
+                        // Get modal action buttons (Play, My List, Mute, Episodes)
+                        const modalButtons = document.querySelectorAll('.modal-content button.tv-navigable-item:not(.absolute)');
+                        modalButtons.forEach(button => {
+                            this.modalItems.push(button);
+                        });
+
+                        // Get episode items if episode selector is shown
+                        if (this.showEpisodeSelector) {
+                            const episodeItems = document.querySelectorAll('.modal-content .grid .tv-navigable-item');
+                            episodeItems.forEach(item => {
+                                this.modalItems.push(item);
+                            });
+                        }
+
+                        console.log('Modal navigation items found:', this.modalItems.length, 'showEpisodeSelector:', this.showEpisodeSelector);
+
+                        // Reset modal navigation to first item
+                        this.modalCurrentItem = 0;
+
+                        // Focus the first item after a short delay to ensure DOM is ready
+                        setTimeout(() => {
+                            this.focusModalItem();
+                        }, 100);
+                    }, 200); // Reduced delay for faster navigation
+                },
+
+                isSectionVisible(section) {
+                    // First check if the section has content
+                    let hasContent = false;
+                    switch (section) {
+                        case 'search':
+                            // Search section is always visible (can navigate to search input even without results)
+                            hasContent = true;
+                            break;
+                        case 'watchlist':
+                            hasContent = this.showWatchlist && this.getFilteredWatchlist().length > 0;
+                            break;
+                        case 'continue-watching':
+                            hasContent = this.showContinueWatching && this.getFilteredContinueWatching().length > 0;
+                            break;
+                        case 'trending':
+                            hasContent = this.showTrending && (this.getFilteredTrending() || []).length > 0;
+                            break;
+                        case 'popular-movies':
+                            hasContent = this.showPopularMovies && this.getFilteredPopularMovies().length > 0;
+                            break;
+                        case 'popular-tv-shows':
+                            hasContent = this.showPopularTVShows && this.getFilteredPopularTVShows().length > 0;
+                            break;
+                        case 'top-rated-movies':
+                            hasContent = this.showTopRatedMovies && this.getFilteredTopRatedMovies().length > 0;
+                            break;
+                        case 'top-rated-tv-shows':
+                            hasContent = this.showTopRatedTVShows && this.getFilteredTopRatedTVShows().length > 0;
+                            break;
+                        case 'hindi':
+                            hasContent = this.showHindi && this.getFilteredHindi().length > 0;
+                            break;
+                        case 'bottom-navigation':
+                            hasContent = false; // Bottom navigation is hidden on desktop
+                            break;
+                        default:
+                            hasContent = false;
+                    }
+
+                    if (!hasContent) return false;
+
+                    // Then check if the section element is actually visible (not hidden by CSS)
+                    let sectionElement = null;
+                    switch (section) {
+                        case 'search':
+                            sectionElement = document.querySelector('[x-show="showSearchBar"]');
+                            break;
+                        case 'watchlist':
+                            sectionElement = document.querySelector('[x-show*="showWatchlist"]');
+                            break;
+                        case 'continue-watching':
+                            sectionElement = document.querySelector('[x-show*="showContinueWatching"]');
+                            break;
+                        case 'trending':
+                            sectionElement = document.querySelector('[x-show*="showTrending"]');
+                            break;
+                        case 'popular-movies':
+                            sectionElement = document.querySelector('[x-show*="showPopularMovies"]');
+                            break;
+                        case 'popular-tv-shows':
+                            sectionElement = document.querySelector('[x-show*="showPopularTVShows"]');
+                            break;
+                        case 'top-rated-movies':
+                            sectionElement = document.querySelector('[x-show*="showTopRatedMovies"]');
+                            break;
+                        case 'top-rated-tv-shows':
+                            sectionElement = document.querySelector('[x-show*="showTopRatedTVShows"]');
+                            break;
+                        case 'hindi':
+                            sectionElement = document.querySelector('[x-show*="showHindi"]');
+                            break;
+                    }
+
+                    if (sectionElement) {
+                        // Check if element is visible (not hidden by CSS)
+                        const style = window.getComputedStyle(sectionElement);
+                        return style.display !== 'none' && style.visibility !== 'hidden';
+                    }
+
+                    return hasContent; // Fallback for sections without specific elements
+                },
+
+                findFirstVisibleSection() {
+                    for (let i = 0; i < this.sections.length; i++) {
+                        if (this.isSectionVisible(this.sections[i])) {
+                            return i;
+                        }
+                    }
+                    return 0; // Fallback to first section
+                },
+
+                ensureValidNavigation() {
+                    // If current section is not visible, move to first visible section
+                    if (!this.isSectionVisible(this.sections[this.currentSection])) {
+                        this.currentSection = this.findFirstVisibleSection();
+                        this.currentItem = 0;
+                        this.focusCurrentItem();
+                        this.scrollToCurrentSection();
+                    }
+                },
             }
         }
     </script>
