@@ -428,6 +428,25 @@
             [x-cloak] {
                 display: none !important;
             }
+
+            /* Trailer fade animations */
+            .trailer-poster {
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+            }
+
+            .trailer-poster.fade-out {
+                opacity: 0;
+            }
+
+            .trailer-iframe {
+                opacity: 0;
+                transition: opacity 0.5s ease-in-out;
+            }
+
+            .trailer-iframe.fade-in {
+                opacity: 1;
+            }
         </style>
         <style>
             /* Hide native vertical scrollbar when running as an installed PWA (standalone/fullscreen).
@@ -599,14 +618,20 @@
                 <!-- Content Info Section with Trailer Background -->
                 <template x-if="selectedContent">
                     <div class="flex flex-col sm:relative sm:min-h-[500px] lg:min-h-[600px]">
-                        <!-- Trailer Section - Top on Mobile, Background on Desktop -->
                         <div x-show="selectedTrailerUrl"
                             class="relative sm:absolute sm:inset-0 z-0 h-[250px] sm:h-auto">
                             <div class="absolute inset-0 overflow-hidden">
-                                <iframe
+                                <!-- Poster Background (shown initially) -->
+                                <div x-show="!isTrailerReady" class="absolute inset-0 bg-cover bg-center trailer-poster"
+                                    :class="{ 'fade-out': isTrailerReady }"
+                                    :style="`background-image: url('https://image.tmdb.org/t/p/original${selectedContent?.backdrop_path || selectedContent?.poster_path}')`">
+                                </div>
+
+                                <!-- Trailer Iframe (shown when ready) -->
+                                <iframe x-show="isTrailerReady"
                                     :src="selectedTrailerUrl ? selectedTrailerUrl + '&enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=' + selectedTrailerUrl.split('/embed/')[1]?.split('?')[0] : ''"
                                     allow="autoplay; encrypted-media"
-                                    class="absolute top-1/2 left-1/2 w-[100vw] h-[100vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
+                                    class="absolute top-1/2 left-1/2 w-[100vw] h-[100vh] -translate-x-1/2 -translate-y-1/2 pointer-events-none trailer-iframe fade-in">
                                 </iframe>
                             </div>
                             <div
@@ -921,6 +946,7 @@
                 fullscreenPlayerUrl: '',
                 preloadPlayerUrl: '', // URL for background preloading
                 isPreloading: false,  // Track preload status
+                isTrailerReady: false, // Track if modal trailer is ready to play
 
                 categories: [
                     { id: 'popular', name: 'Most Popular', movieEndpoint: 'movie/popular', tvEndpoint: 'tv/popular' },
@@ -945,6 +971,33 @@
                     { id: 'war', name: 'War', movieGenre: 10752, tvGenre: 10768 },
                     { id: 'western', name: 'Western', movieGenre: 37, tvGenre: 37 }
                 ],
+
+                // Helper method to get URL from source template
+                getSourceUrl(sourceId, type, params = {}) {
+                    const source = window.SOURCES.find(s => s.id === sourceId);
+                    if (!source) {
+                        console.error(`Source ${sourceId} not found`);
+                        return '';
+                    }
+
+                    let template = source[type];
+                    if (!template) {
+                        console.error(`Template for type ${type} not found in source ${sourceId}`);
+                        return '';
+                    }
+
+                    // Replace placeholders in template
+                    template = template.replace('{id}', params.id || '');
+                    template = template.replace('{season}', params.season || '');
+                    template = template.replace('{episode}', params.episode || '');
+
+                    return template;
+                },
+
+                // Helper method to get URL using default source
+                getDefaultSourceUrl(type, params = {}) {
+                    return this.getSourceUrl('rive', type, params);
+                },
 
                 init() {
                     this.loadWatchlist();
@@ -1208,6 +1261,9 @@
 
                     // Start preloading the video in background
                     this.startPreloading();
+
+                    // Start trailer loading sequence - show poster first, then trailer
+                    this.startTrailerSequence();
                 },
 
                 toggleSearch() {
@@ -1269,6 +1325,18 @@
                     }
                 },
 
+                startTrailerSequence() {
+                    // Reset trailer ready state
+                    this.isTrailerReady = false;
+
+                    // Show poster for 2 seconds, then switch to trailer
+                    setTimeout(() => {
+                        if (this.showModal && this.selectedTrailerUrl) {
+                            this.isTrailerReady = true;
+                        }
+                    }, 2000);
+                },
+
                 async loadModalTrailer() {
                     try {
                         const response = await fetch(`https://api.themoviedb.org/3/${this.selectedContentType}/${this.selectedContentId}/videos?api_key=${this.apiKey}`);
@@ -1284,12 +1352,15 @@
 
                         if (trailer) {
                             this.selectedTrailerUrl = `https://www.youtube.com/embed/${trailer.key}?enablejsapi=1`;
+                            this.isTrailerReady = false; // Reset trailer ready state when loading new trailer
                         } else {
                             this.selectedTrailerUrl = '';
+                            this.isTrailerReady = false;
                         }
                     } catch (error) {
                         console.error('Error loading trailer:', error);
                         this.selectedTrailerUrl = '';
+                        this.isTrailerReady = false;
                     }
                 },
 
@@ -1321,6 +1392,7 @@
                     this.selectedEpisodes = [];
                     this.showEpisodeSelector = false;
                     this.isModalTrailerMuted = true;
+                    this.isTrailerReady = false; // Reset trailer ready state
                 },
 
                 startPreloading() {
@@ -1330,13 +1402,19 @@
                 },
 
                 updatePreloadUrl() {
-                    // Generate URL for preloading using RiveStream embed endpoints
+                    // Generate URL for preloading using default source
                     if (this.selectedIsShow) {
                         // For TV shows, use current season and episode
-                        this.preloadPlayerUrl = `https://rivestream.org/embed?type=tv&id=${this.selectedContentId}&season=${this.selectedSeason}&episode=${this.selectedEpisode}&autoPlay=false`;
+                        this.preloadPlayerUrl = this.getDefaultSourceUrl('tv', {
+                            id: this.selectedContentId,
+                            season: this.selectedSeason,
+                            episode: this.selectedEpisode
+                        });
                     } else {
                         // For movies
-                        this.preloadPlayerUrl = `https://rivestream.org/embed?type=movie&id=${this.selectedContentId}&autoPlay=false`;
+                        this.preloadPlayerUrl = this.getDefaultSourceUrl('movie', {
+                            id: this.selectedContentId
+                        });
                     }
                 },
 
@@ -1372,9 +1450,15 @@
                     let url;
 
                     if (this.selectedIsShow) {
-                        url = `https://rivestream.org/embed?type=tv&id=${this.selectedContentId}&season=${this.selectedSeason}&episode=${this.selectedEpisode}&autoPlay=true`;
+                        url = this.getDefaultSourceUrl('tv', {
+                            id: this.selectedContentId,
+                            season: this.selectedSeason,
+                            episode: this.selectedEpisode
+                        }).replace('autoPlay=false', 'autoPlay=true');
                     } else {
-                        url = `https://rivestream.org/embed?type=movie&id=${this.selectedContentId}&autoPlay=true`;
+                        url = this.getDefaultSourceUrl('movie', {
+                            id: this.selectedContentId
+                        }).replace('autoPlay=false', 'autoPlay=true');
                     }
 
                     // Stop the trailer before opening fullscreen player
@@ -1398,6 +1482,7 @@
                         this.loadModalTrailer();
                         // Restart preloading
                         this.startPreloading();
+                        this.isTrailerReady = false; // Reset trailer ready state
                     }
                 },
 

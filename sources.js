@@ -7,4 +7,11 @@ window.SOURCES = [
         movie: 'https://rivestream.org/embed?type=movie&id={id}',
         tv: 'https://rivestream.org/embed?type=tv&id={id}&season={season}&episode={episode}'
     }
+
+
 ];
+
+
+
+
+

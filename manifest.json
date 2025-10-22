@@ -1,7 +1,7 @@
 {
-    "name": "Spicy - Movies & TV Shows",
+    "name": "Spicy",
     "short_name": "Spicy",
-    "description": "Find & Watch Movies & TV Shows with AI-powered recommendations",
+    "description": "",
     "start_url": "/",
     "display": "fullscreen",
     "background_color": "#000000",
