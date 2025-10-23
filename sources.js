@@ -2,10 +2,10 @@
 // the player embed URL for movies and TV shows.
 window.SOURCES = [
     {
-        id: 'pstream',
-        name: 'P-Stream',
-        movie: 'https://iframe.pstream.mov/media/tmdb-movie-{id}',
-        tv: 'https://iframe.pstream.mov/media/tmdb-tv-{id}/{season}/{episode}'
+        id: 'rive',
+        name: 'RiveStream',
+        movie: 'https://rivestream.org/embed?type=movie&id={id}',
+        tv: 'https://rivestream.org/embed?type=tv&id={id}&season={season}&episode={episode}'
     }
 
 
