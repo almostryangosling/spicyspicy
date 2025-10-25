@@ -1404,7 +1404,7 @@
                     <!-- Episodes Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         <template x-for="episode in selectedEpisodes" :key="episode.episode_number">
-                            <div @click="selectedEpisode = episode.episode_number; updatePreloadUrl(); playFullscreen()"
+                            <div @click="selectedEpisode = episode.episode_number; playFullscreen()"
                                 class="tv-navigable-item cursor-pointer bg-amoled-light rounded-lg p-3 hover:bg-amoled-card transition-colors border border-amoled-border hover:border-blue-500"
                                 :class="selectedEpisode === episode.episode_number ? 'border-blue-500 bg-amoled-card' : ''">
                                 <div class="aspect-video mb-2 bg-gray-600 rounded overflow-hidden">
@@ -1419,12 +1419,6 @@
                     </div>
                 </div>
 
-                <!-- Hidden Preload Player (loads in background while modal is open) -->
-                <div x-show="false" class="hidden pointer-events-none" aria-hidden="true">
-                    <iframe x-show="preloadPlayerUrl" :src="preloadPlayerUrl" class="w-0 h-0 opacity-0"
-                        allow="autoplay; encrypted-media; fullscreen" id="preloadPlayerIframe">
-                    </iframe>
-                </div>
             </div>
         </div>
     </div>
@@ -1545,8 +1539,6 @@
                 showEpisodeSelector: false,
                 showFullscreenPlayer: false,
                 fullscreenPlayerUrl: '',
-                preloadPlayerUrl: '', // URL for background preloading
-                isPreloading: false,  // Track preload status
                 isTrailerReady: false, // Track if modal trailer is ready to play
 
                 isMobileDevice() {
@@ -2136,9 +2128,6 @@
                         await this.loadModalEpisodes();
                     }
 
-                    // Start preloading the video in background
-                    this.startPreloading();
-
                     // Start trailer loading sequence - show poster first, then trailer
                     this.startTrailerSequence();
                 },
@@ -2218,11 +2207,6 @@
                         // Re-affirm the selected season to ensure Alpine.js binding is correct
                         this.selectedSeason = seasonToLoad;
 
-                        // Update preload URL with new season
-                        if (this.showModal) {
-                            this.updatePreloadUrl();
-                        }
-
                         // Update modal navigation after episodes are loaded
                         this.updateModalNavigation();
                     } catch (error) {
@@ -2247,9 +2231,6 @@
                         }
                     }
 
-                    // Stop and clear preload player
-                    this.stopPreloading();
-
                     this.showModal = false;
                     this.selectedContent = null;
                     this.selectedTrailerUrl = '';
@@ -2261,35 +2242,6 @@
                     // Reset modal navigation
                     this.modalCurrentItem = 0;
                     this.modalItems = [];
-                },
-
-                startPreloading() {
-                    // Generate the preload URL based on content type
-                    this.updatePreloadUrl();
-                    this.isPreloading = true;
-                },
-
-                updatePreloadUrl() {
-                    // Generate URL for preloading using default source
-                    if (this.selectedIsShow) {
-                        // For TV shows, use current season and episode
-                        this.preloadPlayerUrl = this.getDefaultSourceUrl('tv', {
-                            id: this.selectedContentId,
-                            season: this.selectedSeason,
-                            episode: this.selectedEpisode
-                        });
-                    } else {
-                        // For movies
-                        this.preloadPlayerUrl = this.getDefaultSourceUrl('movie', {
-                            id: this.selectedContentId
-                        });
-                    }
-                },
-
-                stopPreloading() {
-                    // Clear the preload URL to stop the iframe
-                    this.preloadPlayerUrl = '';
-                    this.isPreloading = false;
                 },
 
                 toggleModalTrailerMute() {
@@ -2440,32 +2392,23 @@
                 },
 
                 playFullscreen() {
-                    // Use the preloaded URL with autoPlay enabled
-                    let url = this.preloadPlayerUrl;
+                    // Generate URL with autoPlay enabled
+                    let url;
 
-                    if (!url) {
-                        // Fallback: generate URL if preloading wasn't started
-                        if (this.selectedIsShow) {
-                            url = this.getDefaultSourceUrl('tv', {
-                                id: this.selectedContentId,
-                                season: this.selectedSeason,
-                                episode: this.selectedEpisode
-                            });
-                        } else {
-                            url = this.getDefaultSourceUrl('movie', {
-                                id: this.selectedContentId
-                            });
-                        }
+                    if (this.selectedIsShow) {
+                        url = this.getDefaultSourceUrl('tv', {
+                            id: this.selectedContentId,
+                            season: this.selectedSeason,
+                            episode: this.selectedEpisode
+                        }).replace('autoPlay=false', 'autoPlay=true');
+                    } else {
+                        url = this.getDefaultSourceUrl('movie', {
+                            id: this.selectedContentId
+                        }).replace('autoPlay=false', 'autoPlay=true');
                     }
-
-                    // Enable autoplay on the URL
-                    url = url.replace('autoPlay=false', 'autoPlay=true');
 
                     // Stop the trailer before opening fullscreen player
                     this.stopModalTrailer();
-
-                    // Don't stop preloading - let it continue in background
-                    // this.stopPreloading(); // Commented out to keep preloading active
 
                     this.fullscreenPlayerUrl = url;
                     this.showFullscreenPlayer = true;
@@ -2483,8 +2426,6 @@
                     // Reload the trailer when returning to modal
                     if (this.selectedContentId && this.selectedContentType) {
                         this.loadModalTrailer();
-                        // Restart preloading
-                        this.startPreloading();
                         this.isTrailerReady = false; // Reset trailer ready state
                     }
                 },
