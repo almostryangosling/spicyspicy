@@ -17,7 +17,7 @@
     <!-- Resource Hints for Performance -->
     <link rel="preconnect" href="https://api.themoviedb.org" crossorigin>
     <link rel="preconnect" href="https://image.tmdb.org" crossorigin>
-    <link rel="dns-prefetch" href="https://rivestream.org">
+    <link rel="dns-prefetch" href="https://primewire.tf">
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
@@ -1010,85 +1010,28 @@
             </div>
         </div>
 
-        <!-- Popular Movies -->
-        <div x-show="showPopularMovies && getFilteredPopularMovies().length > 0"
+        <!-- Popular (Unified for Mobile) -->
+        <div x-show="showPopular && getFilteredPopular().length > 0"
             class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4 sm:hidden">
             <div class="flex items-center justify-between mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
-                <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
-                    <button @click="popularMoviesType = 'movie'"
-                        :class="popularMoviesType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
-                        Movies
-                    </button>
-                    <button @click="popularMoviesType = 'tv'"
-                        :class="popularMoviesType === 'tv' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
-                        TV Shows
-                    </button>
-                </div>
             </div>
             <div class="scroll-container">
-                <div id="popular-movies-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredPopularMovies()" :key="'popular-movie-' + index">
+                <div id="popular-container" class="horizontal-scroll">
+                    <template x-for="(item, index) in getFilteredPopular()" :key="'popular-' + index">
                         <div class="card-fixed tv-navigable-item card-animate"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
                                 <div class="aspect-[2/3] relative">
-                                    <img :src="'https://image.tmdb.org/t/p/w300' + item.poster_path" :alt="item.title"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async" @error="event => {
+                                    <img :src="'https://image.tmdb.org/t/p/w300' + item.poster_path"
+                                        :alt="item.title || item.name" class="w-full h-full object-cover" loading="lazy"
+                                        decoding="async" @error="event => {
                                             event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
                                         }">
                                     <div
                                         class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
-                                        <h3 class="text-sm md:text-lg font-semibold" x-text="item.title">
-                                        </h3>
-                                        <p class="text-gray-400 text-xs md:text-sm mt-1"
-                                            x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </div>
-        </div>
-
-        <!-- Popular TV Shows -->
-        <div x-show="showPopularTVShows && getFilteredPopularTVShows().length > 0"
-            class="max-w-7xl mx-auto mt-8 sm:mt-12 fade-in fade-in-delay-4 sm:hidden">
-            <div class="flex items-center justify-between mb-4 sm:mb-6">
-                <h2 class="text-xl sm:text-2xl font-bold text-white">Popular</h2>
-                <div class="hidden sm:flex bg-amoled-light rounded-lg p-1 border border-amoled-border">
-                    <button @click="popularTVShowsType = 'movie'"
-                        :class="popularTVShowsType === 'movie' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
-                        Movies
-                    </button>
-                    <button @click="popularTVShowsType = 'tv'"
-                        :class="popularTVShowsType === 'tv' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'"
-                        class="px-3 py-1 sm:px-4 sm:py-2 rounded-md text-sm font-medium transition-all">
-                        TV Shows
-                    </button>
-                </div>
-            </div>
-            <div class="scroll-container">
-                <div id="popular-tv-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredPopularTVShows()" :key="'popular-tv-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
-                            :class="'card-delay-' + ((index % 20) + 1)">
-                            <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
-                                @click="watchContent(item)">
-                                <div class="aspect-[2/3] relative">
-                                    <img :src="'https://image.tmdb.org/t/p/w300' + item.poster_path" :alt="item.name"
-                                        class="w-full h-full object-cover" loading="lazy" decoding="async" @error="event => {
-                                            event.target.src = 'https://via.placeholder.com/300x450?text=No+Image';
-                                        }">
-                                    <div
-                                        class="card-overlay absolute inset-0 flex flex-col justify-end p-2 sm:p-3 md:p-4">
-                                        <h3 class="text-sm md:text-lg font-semibold" x-text="item.name">
+                                        <h3 class="text-sm md:text-lg font-semibold" x-text="item.title || item.name">
                                         </h3>
                                         <p class="text-gray-400 text-xs md:text-sm mt-1"
                                             x-text="'⭐ ' + (item.vote_average ? item.vote_average.toFixed(1) : 'N/A') + '/10'">
@@ -1429,8 +1372,8 @@
 
         <!-- Close Button -->
         <button @click="closeFullscreenPlayer()"
-            class="absolute top-4 right-4 z-10 p-3 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            class="absolute top-14 right-2.5 z-10 p-2 rounded-full bg-black/70 hover:bg-black/90 text-white transition-all duration-200 hover:scale-110">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
         </button>
@@ -1438,21 +1381,62 @@
         <!-- Player -->
         <div class="w-full h-full flex items-center justify-center">
             <iframe :src="fullscreenPlayerUrl" class="w-full h-full" allowfullscreen
-                allow="autoplay; encrypted-media; fullscreen">
+                allow="autoplay *; encrypted-media *; fullscreen *; picture-in-picture *">
             </iframe>
+        </div>
+
+        <!-- Episode Navigation Controls (TV Shows Only) -->
+        <div x-show="selectedIsShow && showFullscreenPlayer"
+            class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+            <!-- Previous Episode Button -->
+            <button @click="playPreviousEpisode()" x-show="canPlayPreviousEpisode()"
+                class="px-3 py-1.5 rounded-md bg-black/70 hover:bg-black/90 text-white text-xs font-light transition-all duration-200 hover:scale-105 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                Previous
+            </button>
+
+            <!-- Current Episode Info -->
+            <div class="px-3 py-1.5 rounded-md bg-black/70 text-white text-xs font-light flex items-center">
+                S<span x-text="selectedSeason"></span>E<span x-text="selectedEpisode"></span>
+            </div>
+
+            <!-- Next Episode Button -->
+            <button @click="playNextEpisode()" x-show="canPlayNextEpisode()"
+                class="px-3 py-1.5 rounded-md bg-black/70 hover:bg-black/90 text-white text-xs font-light transition-all duration-200 hover:scale-105 flex items-center gap-1">
+                Next
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
         </div>
     </div>
 
     <!-- Bottom Navigation (Mobile Only) -->
     <div
         class="fixed bottom-0 left-0 right-0 bg-amoled border-t border-amoled-border p-2 flex justify-around sm:hidden z-50">
-        <a href="#" @click.prevent="navigateToHome()"
-            class="tv-navigable-item flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
+        <a href="#"
+            @click.prevent="contentType = 'movie'; trendingType = 'movie'; popularMoviesType = 'movie'; topRatedMoviesType = 'movie'; hindiType = 'movie'"
+            class="tv-navigable-item flex flex-col items-center justify-center transition-colors w-full py-2 rounded-lg hover:bg-amoled-card"
+            :class="contentType === 'movie' ? 'text-white' : 'text-gray-300 hover:text-white'">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
             </svg>
+            <span class="text-xs mt-1">Movies</span>
+        </a>
+        <a href="#"
+            @click.prevent="contentType = 'tv'; trendingType = 'tv'; popularTVShowsType = 'tv'; topRatedTVShowsType = 'tv'; hindiType = 'tv'"
+            class="tv-navigable-item flex flex-col items-center justify-center transition-colors w-full py-2 rounded-lg hover:bg-amoled-card"
+            :class="contentType === 'tv' ? 'text-white' : 'text-gray-300 hover:text-white'">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span class="text-xs mt-1">Series</span>
         </a>
         <a href="#" @click.prevent="toggleSearch()"
             class="tv-navigable-item flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
@@ -1461,6 +1445,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
+            <span class="text-xs mt-1">Search</span>
         </a>
     </div>
     <script>
@@ -1485,12 +1470,13 @@
                 hindiTVShows: [],
                 hindiType: 'movie', // 'movie' or 'tv' for Hindi section
                 contentType: 'movie', // 'movie' or 'tv' for mobile content filtering
-                defaultSource: 'rive', // Default source (RiveStream)
+                defaultSource: 'primewire', // Default source (PrimeWire)
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
                 showWatchlist: false,
                 showContinueWatching: false,
                 showTrending: false,
+                showPopular: false,
                 showPopularMovies: false,
                 showTopRatedMovies: false,
                 showPopularTVShows: false,
@@ -1576,8 +1562,7 @@
                     setTimeout(() => { this.showWatchlist = true; }, 150);
                     setTimeout(() => { this.showContinueWatching = true; }, 200);
                     setTimeout(() => { this.showTrending = true; }, 300);
-                    setTimeout(() => { this.showPopularMovies = true; }, 400);
-                    setTimeout(() => { this.showPopularTVShows = true; }, 500);
+                    setTimeout(() => { this.showPopular = true; }, 400);
                     setTimeout(() => { this.showHindi = true; }, 600);
                     setTimeout(() => { this.showTopRatedMovies = true; }, 700);
                     setTimeout(() => { this.showTopRatedTVShows = true; }, 800);
@@ -1817,8 +1802,8 @@
                 },
 
                 loadDefaultSource() {
-                    // Use RiveStream as the default video source
-                    this.defaultSource = 'rive';
+                    // Use PrimeWire as the default video source
+                    this.defaultSource = 'primewire';
                 },
 
                 // Helper method to get URL from source template
@@ -1937,6 +1922,12 @@
                 getFilteredTrending() {
                     const type = this.isMobileDevice() ? this.contentType : this.trendingType;
                     return (this.trending || []).filter(item => item && item.media_type === type);
+                },
+
+                getFilteredPopular() {
+                    // Combine both popular movies and TV shows, then filter by contentType on mobile
+                    const combined = [...this.popularMovies, ...this.popularTVShows];
+                    return combined.filter(item => item.media_type === this.contentType);
                 },
 
                 getFilteredPopularMovies() {
@@ -2343,6 +2334,22 @@
                     });
                 },
 
+                requestLandscape() {
+                    // Request landscape orientation on mobile devices
+                    if (this.isMobileDevice() && screen.orientation && screen.orientation.lock) {
+                        screen.orientation.lock('landscape').catch(err => {
+                            console.log('Orientation lock not supported:', err);
+                        });
+                    }
+                },
+
+                unlockOrientation() {
+                    // Unlock orientation when closing player
+                    if (screen.orientation && screen.orientation.unlock) {
+                        screen.orientation.unlock();
+                    }
+                },
+
                 playHeroContent(item) {
                     // Directly play content in fullscreen from hero section
                     const contentId = item.id;
@@ -2355,12 +2362,12 @@
                             id: contentId,
                             season: 1,
                             episode: 1
-                        }).replace('autoPlay=false', 'autoPlay=true');
+                        });
                     } else {
                         // For movies
                         url = this.getDefaultSourceUrl('movie', {
                             id: contentId
-                        }).replace('autoPlay=false', 'autoPlay=true');
+                        });
                     }
 
                     // Stop hero carousel and pause trailer
@@ -2369,6 +2376,9 @@
 
                     this.fullscreenPlayerUrl = url;
                     this.showFullscreenPlayer = true;
+
+                    // Request landscape orientation on mobile
+                    this.requestLandscape();
 
                     // Track as watched (for continue watching)
                     const continueWatchingData = {
@@ -2392,7 +2402,7 @@
                 },
 
                 playFullscreen() {
-                    // Generate URL with autoPlay enabled
+                    // Generate URL for player
                     let url;
 
                     if (this.selectedIsShow) {
@@ -2400,11 +2410,11 @@
                             id: this.selectedContentId,
                             season: this.selectedSeason,
                             episode: this.selectedEpisode
-                        }).replace('autoPlay=false', 'autoPlay=true');
+                        });
                     } else {
                         url = this.getDefaultSourceUrl('movie', {
                             id: this.selectedContentId
-                        }).replace('autoPlay=false', 'autoPlay=true');
+                        });
                     }
 
                     // Stop the trailer before opening fullscreen player
@@ -2413,6 +2423,9 @@
                     this.fullscreenPlayerUrl = url;
                     this.showFullscreenPlayer = true;
                     this.showModal = false;
+
+                    // Request landscape orientation on mobile
+                    this.requestLandscape();
 
                     // Track as watched
                     this.trackWatched();
@@ -2423,11 +2436,119 @@
                     this.fullscreenPlayerUrl = '';
                     this.showModal = true;
 
+                    // Unlock orientation
+                    this.unlockOrientation();
+
                     // Reload the trailer when returning to modal
                     if (this.selectedContentId && this.selectedContentType) {
                         this.loadModalTrailer();
                         this.isTrailerReady = false; // Reset trailer ready state
                     }
+                },
+
+                canPlayNextEpisode() {
+                    if (!this.selectedIsShow || !this.selectedEpisodes || this.selectedEpisodes.length === 0) {
+                        return false;
+                    }
+                    // Check if there's a next episode in current season
+                    const currentEpisodeIndex = this.selectedEpisodes.findIndex(ep => ep.episode_number === this.selectedEpisode);
+                    if (currentEpisodeIndex < this.selectedEpisodes.length - 1) {
+                        return true;
+                    }
+                    // Check if there's a next season
+                    if (this.selectedSeasons && this.selectedSeason < this.selectedSeasons.length) {
+                        return true;
+                    }
+                    return false;
+                },
+
+                canPlayPreviousEpisode() {
+                    if (!this.selectedIsShow) {
+                        return false;
+                    }
+                    // Check if there's a previous episode in current season
+                    if (this.selectedEpisode > 1) {
+                        return true;
+                    }
+                    // Check if there's a previous season
+                    if (this.selectedSeason > 1) {
+                        return true;
+                    }
+                    return false;
+                },
+
+                async playNextEpisode() {
+                    if (!this.canPlayNextEpisode()) return;
+
+                    const currentEpisodeIndex = this.selectedEpisodes.findIndex(ep => ep.episode_number === this.selectedEpisode);
+
+                    // If there's a next episode in current season
+                    if (currentEpisodeIndex < this.selectedEpisodes.length - 1) {
+                        this.selectedEpisode = this.selectedEpisodes[currentEpisodeIndex + 1].episode_number;
+                    } else {
+                        // Move to next season's first episode
+                        this.selectedSeason++;
+                        await this.loadEpisodes();
+                        this.selectedEpisode = 1;
+                    }
+
+                    // Update player URL
+                    const url = this.getDefaultSourceUrl('tv', {
+                        id: this.selectedContentId,
+                        season: this.selectedSeason,
+                        episode: this.selectedEpisode
+                    });
+                    this.fullscreenPlayerUrl = url;
+
+                    // Update continue watching
+                    this.updateContinueWatching();
+                },
+
+                async playPreviousEpisode() {
+                    if (!this.canPlayPreviousEpisode()) return;
+
+                    // If there's a previous episode in current season
+                    if (this.selectedEpisode > 1) {
+                        this.selectedEpisode--;
+                    } else {
+                        // Move to previous season's last episode
+                        this.selectedSeason--;
+                        await this.loadEpisodes();
+                        // Set to last episode of the season
+                        if (this.selectedEpisodes && this.selectedEpisodes.length > 0) {
+                            this.selectedEpisode = this.selectedEpisodes[this.selectedEpisodes.length - 1].episode_number;
+                        }
+                    }
+
+                    // Update player URL
+                    const url = this.getDefaultSourceUrl('tv', {
+                        id: this.selectedContentId,
+                        season: this.selectedSeason,
+                        episode: this.selectedEpisode
+                    });
+                    this.fullscreenPlayerUrl = url;
+
+                    // Update continue watching
+                    this.updateContinueWatching();
+                },
+
+                updateContinueWatching() {
+                    if (!this.selectedIsShow) return;
+
+                    const continueWatchingData = {
+                        id: this.selectedContentId,
+                        title: this.selectedContent.title || this.selectedContent.name,
+                        media_type: 'tv',
+                        poster_path: this.selectedContent.poster_path,
+                        release_date: this.selectedContent.release_date || this.selectedContent.first_air_date,
+                        vote_average: this.selectedContent.vote_average,
+                        overview: this.selectedContent.overview,
+                        last_season: this.selectedSeason,
+                        last_episode: this.selectedEpisode
+                    };
+
+                    this.addToContinueWatching(continueWatchingData);
+                    localStorage.setItem('streamSearch_continueWatching_update', JSON.stringify(continueWatchingData));
                 },
 
                 stopModalTrailer() {

@@ -2,10 +2,10 @@
 // the player embed URL for movies and TV shows.
 window.SOURCES = [
     {
-        id: 'rive',
-        name: 'RiveStream',
-        movie: 'https://rivestream.org/embed?type=movie&id={id}',
-        tv: 'https://rivestream.org/embed?type=tv&id={id}&season={season}&episode={episode}'
+        id: 'primewire',
+        name: 'PrimeWire',
+        movie: 'https://primewire.tf/embed/movie?tmdb={id}',
+        tv: 'https://primewire.tf/embed/tv?tmdb={id}&season={season}&episode={episode}'
     }
 
 

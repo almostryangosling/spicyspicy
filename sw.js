@@ -99,7 +99,7 @@ self.addEventListener('fetch', event => {
     }
 
     // Strategy 4: Cache-first for video player embed (external)
-    else if (url.hostname === 'rivestream.org') {
+    else if (url.hostname === 'primewire.tf') {
         event.respondWith(
             caches.match(event.request)
                 .then(response => response || fetch(event.request))
