@@ -787,9 +787,83 @@
             }
         }
     </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAR3FWHBpaYsaiE-zGuMAX01ghQzkkN-6Y",
+            authDomain: "spicyspicy-78ec1.firebaseapp.com",
+            databaseURL: "https://spicyspicy-78ec1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "spicyspicy-78ec1",
+            storageBucket: "spicyspicy-78ec1.firebasestorage.app",
+            messagingSenderId: "477298568930",
+            appId: "1:477298568930:web:bc692a6c0bf90f8d27b8bb"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
 </head>
 
 <body class="bg-amoled min-h-screen text-white" x-data="searchApp()">
+
+    <!-- Top Right Login/Username Button -->
+    <div class="fixed top-4 right-4 z-50">
+        <!-- Login Button (when not logged in) -->
+        <button x-show="!currentUsername" @click="showLoginModal = true"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-lg">
+            Login
+        </button>
+
+        <!-- Username Button (when logged in) -->
+        <div x-show="currentUsername" class="relative" x-data="{ showLogoutMenu: false }">
+            <button @click="showLogoutMenu = !showLogoutMenu"
+                class="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span x-text="currentUsername"></span>
+            </button>
+
+            <!-- Logout Dropdown -->
+            <div x-show="showLogoutMenu" @click.away="showLogoutMenu = false" x-cloak
+                class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl overflow-hidden">
+                <button @click="logout(); showLogoutMenu = false"
+                    class="w-full px-4 py-3 text-left hover:bg-gray-700 transition-colors flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Username Login Modal -->
+    <div x-show="showLoginModal" x-cloak
+        class="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-90"
+        @click.self="showLoginModal = false">
+        <div class="bg-gray-900 p-8 rounded-lg shadow-2xl max-w-md w-full mx-4">
+            <h2 class="text-2xl font-bold mb-2 text-center">Welcome to Spicy</h2>
+            <p class="text-gray-400 text-sm mb-6 text-center">Enter your username to sync across devices</p>
+            <input type="text" x-model="usernameInput" @keyup.enter="login()" placeholder="Enter username"
+                class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 mb-4">
+            <button @click="login()"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-all">
+                Continue
+            </button>
+            <p class="text-xs text-gray-500 mt-4 text-center">Your watchlist and progress will sync across all your
+                devices</p>
+        </div>
+    </div>
 
     <!-- Hero Carousel (Mobile Only) -->
     <div x-show="showHeroCarousel && getHeroItems().length > 0" class="hero-carousel sm:hidden"
@@ -1447,6 +1521,15 @@
             </svg>
             <span class="text-xs mt-1">Search</span>
         </a>
+        <a href="#" @click.prevent="logout()" x-show="currentUsername"
+            class="tv-navigable-item flex flex-col items-center justify-center text-gray-300 hover:text-white transition-colors w-full py-2 rounded-lg hover:bg-amoled-card">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+            <span class="text-xs mt-1" x-text="currentUsername"></span>
+        </a>
     </div>
     <script>
         function searchApp() {
@@ -1456,6 +1539,10 @@
                 isLoading: false,
                 watchlist: [],
                 continueWatching: [],
+                currentUsername: localStorage.getItem('spicy_username') || '',
+                usernameInput: '',
+                showLoginModal: false,
+                firebaseListeners: [],
                 trending: [],
                 trendingType: 'movie', // 'movie' or 'tv'
                 popularMovies: [],
@@ -1533,6 +1620,11 @@
                 },
 
                 init() {
+                    // Initialize Firebase sync if user is logged in
+                    if (this.currentUsername) {
+                        this.initFirebaseSync();
+                    }
+
                     this.loadWatchlist();
                     this.loadContinueWatching();
                     this.loadDefaultSource();
@@ -1732,6 +1824,76 @@
                     this.startHeroCarousel();
                 },
 
+                // Firebase Authentication & Sync Methods
+                login() {
+                    if (!this.usernameInput.trim()) {
+                        alert('Please enter a username');
+                        return;
+                    }
+                    this.currentUsername = this.usernameInput.trim();
+                    localStorage.setItem('spicy_username', this.currentUsername);
+                    this.showLoginModal = false;
+                    this.initFirebaseSync();
+                },
+
+                logout() {
+                    if (confirm('Are you sure you want to logout? Your data is synced to the cloud.')) {
+                        this.currentUsername = '';
+                        localStorage.removeItem('spicy_username');
+                        // Remove Firebase listeners
+                        this.firebaseListeners.forEach(listener => listener());
+                        this.firebaseListeners = [];
+                        location.reload();
+                    }
+                },
+
+                initFirebaseSync() {
+                    if (!this.currentUsername) return;
+
+                    const userRef = database.ref(`users/${this.currentUsername}`);
+
+                    // Sync watchlist from Firebase
+                    const watchlistListener = userRef.child('watchlist').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            this.watchlist = data;
+                            localStorage.setItem('streamSearch_watchlist', JSON.stringify(data));
+                        }
+                    });
+
+                    // Sync continue watching from Firebase
+                    const continueWatchingListener = userRef.child('continueWatching').on('value', (snapshot) => {
+                        const data = snapshot.val();
+                        if (data) {
+                            this.continueWatching = data;
+                            localStorage.setItem('streamSearch_continueWatching', JSON.stringify(data));
+                        }
+                    });
+
+                    this.firebaseListeners.push(
+                        () => userRef.child('watchlist').off('value', watchlistListener),
+                        () => userRef.child('continueWatching').off('value', continueWatchingListener)
+                    );
+
+                    // Upload current local data to Firebase (merge)
+                    const localWatchlist = localStorage.getItem('streamSearch_watchlist');
+                    const localContinueWatching = localStorage.getItem('streamSearch_continueWatching');
+
+                    if (localWatchlist) {
+                        const parsed = JSON.parse(localWatchlist);
+                        if (parsed.length > 0) {
+                            userRef.child('watchlist').set(parsed);
+                        }
+                    }
+
+                    if (localContinueWatching) {
+                        const parsed = JSON.parse(localContinueWatching);
+                        if (parsed.length > 0) {
+                            userRef.child('continueWatching').set(parsed);
+                        }
+                    }
+                },
+
                 loadWatchlist() {
                     const saved = localStorage.getItem('streamSearch_watchlist');
                     if (saved) {
@@ -1741,6 +1903,11 @@
 
                 saveWatchlist() {
                     localStorage.setItem('streamSearch_watchlist', JSON.stringify(this.watchlist));
+
+                    // Sync to Firebase if logged in
+                    if (this.currentUsername) {
+                        database.ref(`users/${this.currentUsername}/watchlist`).set(this.watchlist);
+                    }
                 },
 
                 loadContinueWatching() {
@@ -1752,6 +1919,11 @@
 
                 saveContinueWatching() {
                     localStorage.setItem('streamSearch_continueWatching', JSON.stringify(this.continueWatching));
+
+                    // Sync to Firebase if logged in
+                    if (this.currentUsername) {
+                        database.ref(`users/${this.currentUsername}/continueWatching`).set(this.continueWatching);
+                    }
                 },
 
                 addToContinueWatching(item) {
