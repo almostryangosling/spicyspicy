@@ -1670,10 +1670,12 @@
                     // Initialize Firebase sync if user is logged in
                     if (this.currentUsername) {
                         this.initFirebaseSync();
+                    } else {
+                        // Only load from localStorage if not logged in (Firebase will handle it if logged in)
+                        this.loadWatchlist();
+                        this.loadContinueWatching();
                     }
 
-                    this.loadWatchlist();
-                    this.loadContinueWatching();
                     this.loadDefaultSource();
                     this.loadTrending();
                     this.loadPopularMovies();
@@ -1899,7 +1901,60 @@
 
                     const userRef = database.ref(`users/${this.currentUsername}`);
 
-                    // Sync watchlist from Firebase
+                    // First, load existing local data
+                    const localWatchlist = localStorage.getItem('streamSearch_watchlist');
+                    const localContinueWatching = localStorage.getItem('streamSearch_continueWatching');
+
+                    // Check if Firebase has data first
+                    userRef.once('value', (snapshot) => {
+                        const firebaseData = snapshot.val();
+
+                        if (firebaseData) {
+                            // Firebase has data - use it
+                            if (firebaseData.watchlist) {
+                                this.watchlist = firebaseData.watchlist;
+                                localStorage.setItem('streamSearch_watchlist', JSON.stringify(firebaseData.watchlist));
+                            } else if (localWatchlist) {
+                                // Firebase empty but local has data - upload local
+                                const parsed = JSON.parse(localWatchlist);
+                                if (parsed.length > 0) {
+                                    this.watchlist = parsed;
+                                    userRef.child('watchlist').set(parsed);
+                                }
+                            }
+
+                            if (firebaseData.continueWatching) {
+                                this.continueWatching = firebaseData.continueWatching;
+                                localStorage.setItem('streamSearch_continueWatching', JSON.stringify(firebaseData.continueWatching));
+                            } else if (localContinueWatching) {
+                                // Firebase empty but local has data - upload local
+                                const parsed = JSON.parse(localContinueWatching);
+                                if (parsed.length > 0) {
+                                    this.continueWatching = parsed;
+                                    userRef.child('continueWatching').set(parsed);
+                                }
+                            }
+                        } else {
+                            // No Firebase data - upload local if available
+                            if (localWatchlist) {
+                                const parsed = JSON.parse(localWatchlist);
+                                if (parsed.length > 0) {
+                                    this.watchlist = parsed;
+                                    userRef.child('watchlist').set(parsed);
+                                }
+                            }
+
+                            if (localContinueWatching) {
+                                const parsed = JSON.parse(localContinueWatching);
+                                if (parsed.length > 0) {
+                                    this.continueWatching = parsed;
+                                    userRef.child('continueWatching').set(parsed);
+                                }
+                            }
+                        }
+                    });
+
+                    // Set up real-time listeners for live updates
                     const watchlistListener = userRef.child('watchlist').on('value', (snapshot) => {
                         const data = snapshot.val();
                         if (data) {
@@ -1908,7 +1963,6 @@
                         }
                     });
 
-                    // Sync continue watching from Firebase
                     const continueWatchingListener = userRef.child('continueWatching').on('value', (snapshot) => {
                         const data = snapshot.val();
                         if (data) {
@@ -1921,24 +1975,6 @@
                         () => userRef.child('watchlist').off('value', watchlistListener),
                         () => userRef.child('continueWatching').off('value', continueWatchingListener)
                     );
-
-                    // Upload current local data to Firebase (merge)
-                    const localWatchlist = localStorage.getItem('streamSearch_watchlist');
-                    const localContinueWatching = localStorage.getItem('streamSearch_continueWatching');
-
-                    if (localWatchlist) {
-                        const parsed = JSON.parse(localWatchlist);
-                        if (parsed.length > 0) {
-                            userRef.child('watchlist').set(parsed);
-                        }
-                    }
-
-                    if (localContinueWatching) {
-                        const parsed = JSON.parse(localContinueWatching);
-                        if (parsed.length > 0) {
-                            userRef.child('continueWatching').set(parsed);
-                        }
-                    }
                 },
 
                 loadWatchlist() {
