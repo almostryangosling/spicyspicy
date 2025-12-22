@@ -38,6 +38,22 @@
         body.page-transition-out {
             opacity: 0;
         }
+
+        /* Hide scrollbar */
+        html,
+        body {
+            overflow-y: scroll;
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }
     </style>
     <style>
         /* Extra-large screens (TVs): cap layout width and scale down oversized spacing & type */
