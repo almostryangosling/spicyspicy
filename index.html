@@ -959,7 +959,7 @@
             <div class="scroll-container">
                 <div id="results-container" class="horizontal-scroll">
                     <template x-for="(item, index) in results" :key="'result-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate"
+                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -993,7 +993,7 @@
                 <div id="watchlist-container" class="horizontal-scroll">
                     <template x-for="(item, index) in getFilteredWatchlist()"
                         :key="'watchlist-' + item.id + '-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate"
+                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -1082,8 +1082,8 @@
             </div>
             <div class="scroll-container">
                 <div id="trending-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredTrending()" :key="'trend-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate-slide-right"
+                    <template x-for="(item, index) in getFilteredTrending()" :key="contentType + '-trend-' + index">
+                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -1117,8 +1117,8 @@
             </div>
             <div class="scroll-container">
                 <div id="popular-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredPopular()" :key="'popular-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate"
+                    <template x-for="(item, index) in getFilteredPopular()" :key="contentType + '-popular-' + index">
+                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -1164,8 +1164,8 @@
             </div>
             <div class="scroll-container">
                 <div id="hindi-container" class="horizontal-scroll">
-                    <template x-for="(item, index) in getFilteredHindi()" :key="'hindi-' + index">
-                        <div class="card-fixed tv-navigable-item card-animate-slide-right"
+                    <template x-for="(item, index) in getFilteredHindi()" :key="contentType + '-hindi-' + index">
+                        <div class="card-fixed tv-navigable-item card-animate-slide-left"
                             :class="'card-delay-' + ((index % 20) + 1)">
                             <div class="card-hover bg-amoled-card rounded-lg overflow-hidden shadow-lg cursor-pointer border border-amoled-border"
                                 @click="watchContent(item)">
@@ -1226,7 +1226,8 @@
         <div x-show="!isLoading && results.length > 0" class="flex-grow overflow-y-auto -mr-4 pr-4" @click.stop>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                 <template x-for="(item, index) in results" :key="item.id">
-                    <div @click="watchContent(item)" class="tv-navigable-item cursor-pointer group card-animate"
+                    <div @click="watchContent(item)"
+                        class="tv-navigable-item cursor-pointer group card-animate-slide-left"
                         :class="'card-delay-' + ((index % 20) + 1)">
                         <div class="relative aspect-[2/3] bg-amoled-card rounded-lg overflow-hidden">
                             <img :src="item.poster_path ? 'https://image.tmdb.org/t/p/w300' + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'"
@@ -2622,54 +2623,8 @@
                 },
 
                 playHeroContent(item) {
-                    // Directly play content in fullscreen from hero section
-                    const contentId = item.id;
-                    const isShow = item.media_type === 'tv' || item.first_air_date;
-                    let url;
-
-                    if (isShow) {
-                        // For TV shows, play Season 1 Episode 1 using default source
-                        url = this.getDefaultSourceUrl('tv', {
-                            id: contentId,
-                            season: 1,
-                            episode: 1
-                        });
-                    } else {
-                        // For movies
-                        url = this.getDefaultSourceUrl('movie', {
-                            id: contentId
-                        });
-                    }
-
-                    // Stop hero carousel and pause trailer
-                    this.stopHeroCarousel();
-                    this.pauseHeroTrailer();
-
-                    this.fullscreenPlayerUrl = url;
-                    this.showFullscreenPlayer = true;
-
-                    // Request landscape orientation on mobile
-                    this.requestLandscape();
-
-                    // Track as watched (for continue watching)
-                    const continueWatchingData = {
-                        id: contentId,
-                        title: item.title || item.name,
-                        media_type: isShow ? 'tv' : 'movie',
-                        poster_path: item.poster_path,
-                        release_date: item.release_date || item.first_air_date,
-                        vote_average: item.vote_average,
-                        overview: item.overview
-                    };
-
-                    // For TV shows, save season 1 episode 1
-                    if (isShow) {
-                        continueWatchingData.last_season = 1;
-                        continueWatchingData.last_episode = 1;
-                    }
-
-                    this.addToContinueWatching(continueWatchingData);
-                    localStorage.setItem('streamSearch_continueWatching_update', JSON.stringify(continueWatchingData));
+                    // Open modal window instead of directly playing
+                    this.watchContent(item);
                 },
 
                 playFullscreen() {
@@ -2705,16 +2660,10 @@
                 closeFullscreenPlayer() {
                     this.showFullscreenPlayer = false;
                     this.fullscreenPlayerUrl = '';
-                    this.showModal = true;
+                    // Don't reopen modal or reload trailer when closing fullscreen player
 
                     // Unlock orientation
                     this.unlockOrientation();
-
-                    // Reload the trailer when returning to modal
-                    if (this.selectedContentId && this.selectedContentType) {
-                        this.loadModalTrailer();
-                        this.isTrailerReady = false; // Reset trailer ready state
-                    }
                 },
 
                 canPlayNextEpisode() {
