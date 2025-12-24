@@ -872,6 +872,7 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script>
         // Firebase configuration
         const firebaseConfig = {
@@ -887,6 +888,15 @@
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+
+        // Sign in anonymously - gives each browser a unique secure ID
+        firebase.auth().signInAnonymously()
+            .then(() => {
+                console.log('🔐 Authenticated anonymously');
+            })
+            .catch((error) => {
+                console.error('Authentication error:', error);
+            });
     </script>
 </head>
 
