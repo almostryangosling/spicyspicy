@@ -2890,11 +2890,11 @@
                         // Remove from watchlist
                         this.watchlist.splice(index, 1);
                     } else {
-                        // Add to watchlist
+                        // Add to watchlist at the beginning (latest first)
                         // Determine media_type: use item.media_type if available, otherwise use selectedContentType, or fallback to checking dates
                         const mediaType = item.media_type || this.selectedContentType || (item.first_air_date ? 'tv' : 'movie');
 
-                        this.watchlist.push({
+                        this.watchlist.unshift({
                             id: item.id,
                             title: item.title || item.name,
                             media_type: mediaType,
