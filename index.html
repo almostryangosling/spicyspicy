@@ -1574,7 +1574,7 @@
         </div>
 
         <!-- Episode Navigation Controls (TV Shows Only) -->
-        <div x-show="selectedIsShow && showFullscreenPlayer"
+        <div x-show="selectedIsShow && showFullscreenPlayer && currentSource !== 'neoserver'"
             class="absolute bottom-4 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
             <!-- Previous Episode Button -->
             <button @click="playPreviousEpisode()" x-show="canPlayPreviousEpisode()"
