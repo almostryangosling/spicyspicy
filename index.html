@@ -1459,9 +1459,15 @@
 
                                     <!-- Action Buttons -->
                                     <div class="flex flex-wrap gap-2">
-                                        <button @click="playFullscreen()"
+                                        <!-- Source Selection Buttons -->
+                                        <button @click="currentSource = 'primewire'; playFullscreen()"
                                             class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
                                             <span>Play</span>
+                                        </button>
+
+                                        <button @click="currentSource = 'neoserver'; playFullscreen()"
+                                            class="tv-navigable-item flex items-center gap-1.5 px-4 py-2 sm:px-5 sm:py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 text-white rounded-lg font-bold transition-all duration-200 hover:scale-105 shadow-lg text-xs sm:text-sm">
+                                            <span>Neo</span>
                                         </button>
 
                                         <button @click.stop="toggleWatchlist(selectedContent)"
@@ -1938,6 +1944,7 @@
                 hindiType: 'movie', // 'movie' or 'tv' for Hindi section
                 contentType: 'movie', // 'movie' or 'tv' for mobile content filtering
                 defaultSource: 'primewire', // Default source (PrimeWire)
+                currentSource: 'primewire', // Currently selected source for playback
                 apiKey: '1070730380f5fee0d87cf0382670b255',
                 showSearchBar: false,
                 showWatchlist: false,
@@ -2055,6 +2062,9 @@
                         }
                     });
 
+                    // Setup vidrock player event listeners for continue watching
+                    this.initVidrockListeners();
+
                     // Refresh trending content every 30 minutes
                     setInterval(() => {
                         this.loadTrending();
@@ -2090,6 +2100,143 @@
 
                     // Remove transition class after page loads
                     document.body.classList.remove('page-transition-out');
+                },
+
+                initVidrockListeners() {
+                    // Listen for vidrock player events for continue watching
+                    window.addEventListener('message', (event) => {
+                        if (event.origin !== 'https://vidrock.net') return;
+
+                        // Handle MEDIA_DATA event for continue watching
+                        if (event.data?.type === 'MEDIA_DATA') {
+                            const mediaData = event.data.data;
+
+                            // Store in localStorage for vidrock
+                            localStorage.setItem('vidRockProgress', JSON.stringify(mediaData));
+
+                            // Sync with app's continue watching
+                            if (Array.isArray(mediaData)) {
+                                mediaData.forEach(item => {
+                                    this.syncVidrockProgress(item);
+                                });
+                            } else {
+                                this.syncVidrockProgress(mediaData);
+                            }
+                        }
+
+                        // Handle PLAYER_EVENT for real-time progress tracking
+                        if (event.data?.type === 'PLAYER_EVENT') {
+                            const { event: eventType, currentTime, duration, tmdbId, mediaType, season, episode } = event.data.data;
+
+                            // Update progress on timeupdate events (throttled by vidrock)
+                            if (eventType === 'timeupdate' && currentTime && duration) {
+                                const progressPercent = (currentTime / duration) * 100;
+
+                                // Only update if significant progress (at least 5%)
+                                if (progressPercent >= 5) {
+                                    this.updateVidrockProgress(tmdbId, mediaType, currentTime, duration, season, episode);
+                                }
+                            }
+                        }
+                    });
+                },
+
+                syncVidrockProgress(item) {
+                    if (!item || !item.id) return;
+
+                    // Find or create continue watching entry
+                    const existingIndex = this.continueWatching.findIndex(cw => cw.id === item.id);
+
+                    let continueWatchingItem;
+                    if (existingIndex !== -1) {
+                        // Update existing entry
+                        continueWatchingItem = this.continueWatching[existingIndex];
+                    } else {
+                        // Create new entry
+                        continueWatchingItem = {
+                            id: item.id,
+                            title: item.title,
+                            poster_path: item.poster_path,
+                            backdrop_path: item.backdrop_path,
+                            media_type: item.type === 'tv' ? 'tv' : 'movie'
+                        };
+                    }
+
+                    // Update progress
+                    if (item.progress) {
+                        continueWatchingItem.progress = {
+                            watched: item.progress.watched,
+                            duration: item.progress.duration,
+                            percent: (item.progress.watched / item.progress.duration) * 100
+                        };
+                    }
+
+                    // For TV shows, update episode info
+                    if (item.type === 'tv') {
+                        if (item.last_season_watched) {
+                            continueWatchingItem.season = parseInt(item.last_season_watched);
+                        }
+                        if (item.last_episode_watched) {
+                            continueWatchingItem.episode = parseInt(item.last_episode_watched);
+                        }
+
+                        // Get most recent episode progress from show_progress
+                        if (item.show_progress) {
+                            const episodes = Object.values(item.show_progress);
+                            if (episodes.length > 0) {
+                                const latest = episodes.reduce((a, b) =>
+                                    (a.last_updated > b.last_updated) ? a : b
+                                );
+                                if (latest.progress) {
+                                    continueWatchingItem.progress = {
+                                        watched: latest.progress.watched,
+                                        duration: latest.progress.duration,
+                                        percent: (latest.progress.watched / latest.progress.duration) * 100
+                                    };
+                                }
+                            }
+                        }
+                    }
+
+                    continueWatchingItem.last_updated = item.last_updated || Date.now();
+
+                    // Add or update in continue watching
+                    if (existingIndex !== -1) {
+                        this.continueWatching[existingIndex] = continueWatchingItem;
+                    } else {
+                        this.continueWatching.unshift(continueWatchingItem);
+                    }
+
+                    // Keep only last 20 items
+                    if (this.continueWatching.length > 20) {
+                        this.continueWatching = this.continueWatching.slice(0, 20);
+                    }
+
+                    this.saveContinueWatching();
+                },
+
+                updateVidrockProgress(tmdbId, mediaType, watched, duration, season, episode) {
+                    if (!tmdbId) return;
+
+                    const existingIndex = this.continueWatching.findIndex(cw => cw.id === tmdbId);
+
+                    if (existingIndex !== -1) {
+                        // Update existing entry
+                        this.continueWatching[existingIndex].progress = {
+                            watched: watched,
+                            duration: duration,
+                            percent: (watched / duration) * 100
+                        };
+
+                        if (mediaType === 'tv' && season && episode) {
+                            this.continueWatching[existingIndex].season = parseInt(season);
+                            this.continueWatching[existingIndex].episode = parseInt(episode);
+                        }
+
+                        this.continueWatching[existingIndex].last_updated = Date.now();
+
+                        this.saveContinueWatching();
+                    }
                 },
 
                 // Page transition navigation
@@ -3227,17 +3374,17 @@
                 },
 
                 playFullscreen() {
-                    // Generate URL for player
+                    // Generate URL for player using current source
                     let url;
 
                     if (this.selectedIsShow) {
-                        url = this.getDefaultSourceUrl('tv', {
+                        url = this.getSourceUrl(this.currentSource, 'tv', {
                             id: this.selectedContentId,
                             season: this.selectedSeason,
                             episode: this.selectedEpisode
                         });
                     } else {
-                        url = this.getDefaultSourceUrl('movie', {
+                        url = this.getSourceUrl(this.currentSource, 'movie', {
                             id: this.selectedContentId
                         });
                     }

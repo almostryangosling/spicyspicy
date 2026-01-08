@@ -6,9 +6,13 @@ window.SOURCES = [
         name: 'PrimeWire',
         movie: 'https://primewire.tf/embed/movie?tmdb={id}',
         tv: 'https://primewire.tf/embed/tv?tmdb={id}&season={season}&episode={episode}'
+    },
+    {
+        id: 'neoserver',
+        name: 'Neo Server',
+        movie: 'https://vidrock.net/movie/{id}?autoplay=true&autonext=true&theme=f5f5f5',
+        tv: 'https://vidrock.net/tv/{id}/{season}/{episode}?autoplay=true&autonext=true&theme=f5f5f5'
     }
-
-
 ];
 
 
