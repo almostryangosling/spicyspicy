@@ -4,8 +4,8 @@ window.SOURCES = [
     {
         id: 'primewire',
         name: 'PrimeWire',
-        movie: 'https://primewire.tf/embed/movie?tmdb={id}',
-        tv: 'https://primewire.tf/embed/tv?tmdb={id}&season={season}&episode={episode}'
+        movie: 'https://primewire.mov/embed/movie?tmdb={id}',
+        tv: 'https://primewire.mov/embed/tv?tmdb={id}&season={season}&episode={episode}'
     },
     {
         id: 'neoserver',
